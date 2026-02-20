@@ -1,5 +1,14 @@
-title: "AB-3"
+title: "IOU"
 theme: minima
+
+
+description: "A CLI-based debt and loan tracker for busy professionals"
+url: "https://ay2526s2-cs2103t-t16-2.github.io"
+baseurl: "/tp"
+
+
+repository: "AY2526S2-CS2103T-T16-2/tp"
+github_icon: "images/github-icon.png"
 
 header_pages:
   - UserGuide.md
@@ -7,9 +16,6 @@ header_pages:
   - AboutUs.md
 
 markdown: kramdown
-
-repository: "se-edu/addressbook-level3"
-github_icon: "images/github-icon.png"
 
 plugins:
   - jemoji

@@ -1,12 +1,24 @@
 package seedu.address.model.loan;
 
-import java.time.LocalDate;
+/**
+ * Represents a loan where interest is compounded monthly.
+ */
+public class MonthlyLoan extends Loan {
 
-public class MonthlyLoan extends Loan{
+    /**
+     * Constructs a MonthlyLoan.
+     *
+     * @param currAmount the initial loan amount
+     * @param interestRate the interest rate applied monthly
+     */
     public MonthlyLoan(double currAmount, InterestRate interestRate) {
         super(currAmount, interestRate);
     }
 
+    /**
+     * Updates the loan amount by applying interest for each
+     * month that has passed since the last recalculation.
+     */
     @Override
     public void updateLoanAmount() {
         long months = getNumberOfMonthsSinceLastPaid();
@@ -15,5 +27,4 @@ public class MonthlyLoan extends Loan{
 
         updateLastRecalculatedDate();
     }
-
 }

@@ -1,13 +1,24 @@
 package seedu.address.model.loan;
 
-import java.time.LocalDate;
-import java.util.Objects;
+/**
+ * Represents a loan where interest is compounded yearly.
+ */
+public class YearlyLoan extends Loan {
 
-public class YearlyLoan extends Loan{
+    /**
+     * Constructs a YearlyLoan.
+     *
+     * @param currAmount the initial loan amount
+     * @param interestRate the interest rate applied yearly
+     */
     public YearlyLoan(double currAmount, InterestRate interestRate) {
         super(currAmount, interestRate);
     }
 
+    /**
+     * Updates the loan amount by applying interest for each
+     * year that has passed since the last recalculation.
+     */
     @Override
     public void updateLoanAmount() {
         long years = getNumberOfYearsSinceLastPaid();
@@ -16,5 +27,4 @@ public class YearlyLoan extends Loan{
 
         updateLastRecalculatedDate();
     }
-
 }

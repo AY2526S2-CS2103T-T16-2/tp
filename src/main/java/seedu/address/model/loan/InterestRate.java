@@ -21,7 +21,7 @@ public class InterestRate {
      * @param rate Interest rate percentage between 0 and 100.
      * @throws IllegalArgumentException if the interest rate is invalid.
      */
-    public InterestRate(int rate) {
+    public InterestRate(double rate) {
 
         if (!isValidInterestRate(rate)) {
             throw new IllegalArgumentException(MESSAGE_CONSTRAINTS);
@@ -44,7 +44,7 @@ public class InterestRate {
      * @param test value to test
      * @return true if between 0 and 100 inclusive
      */
-    public static boolean isValidInterestRate(int test) {
+    public static boolean isValidInterestRate(double test) {
         return test >= 0 && test <= 100;
     }
 
@@ -78,11 +78,10 @@ public class InterestRate {
             return true;
         }
 
-        if (!(other instanceof InterestRate)) {
+        if (!(other instanceof InterestRate otherRate)) {
             return false;
         }
 
-        InterestRate otherRate = (InterestRate) other;
         return Double.compare(rate, otherRate.rate) == 0;
     }
 

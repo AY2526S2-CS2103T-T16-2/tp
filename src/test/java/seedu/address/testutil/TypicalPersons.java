@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import seedu.address.model.AddressBook;
+import seedu.address.model.loan.MonthlyLoan;
+import seedu.address.model.loan.YearlyLoan;
 import seedu.address.model.person.Person;
 
 /**
@@ -27,10 +29,16 @@ public class TypicalPersons {
             .withAddress("123, Jurong West Ave 6, #08-111").withEmail("alice@example.com")
             .withPhone("94351253")
             .withTags("friends").build();
-    public static final Person BENSON = new PersonBuilder().withName("Benson Meier")
+    public static final Person BENSON = new PersonBuilder()
+            .withName("Benson Meier")
             .withAddress("311, Clementi Ave 2, #02-25")
-            .withEmail("johnd@example.com").withPhone("98765432")
-            .withTags("owesMoney", "friends").build();
+            .withEmail("johnd@example.com")
+            .withPhone("98765432")
+            .withTags("owesMoney", "friends")
+            .withLoans(
+                    new MonthlyLoan(1000.0, 5.0, "Rent"),
+                    new YearlyLoan(-200.0, 0.0, "Lunch") // negative loan allowed
+            ).build();
     public static final Person CARL = new PersonBuilder().withName("Carl Kurz").withPhone("95352563")
             .withEmail("heinz@example.com").withAddress("wall street").build();
     public static final Person DANIEL = new PersonBuilder().withName("Daniel Meier").withPhone("87652533")

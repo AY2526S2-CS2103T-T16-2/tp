@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -11,7 +13,9 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.commons.core.index.Index;
 import seedu.address.model.person.Person;
+import seedu.address.model.transaction.Transaction;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -96,6 +100,16 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) {
         addressBook.removePerson(target);
+    }
+
+    @Override
+    public void deleteTransaction(Person person, Index transactionIndex) {
+        requireAllNonNull(person, transactionIndex);
+        List<Transaction> updatedTransactions = new ArrayList<>(person.getTransactions());
+        updatedTransactions.remove(transactionIndex.getZeroBased());
+        Person updatedPerson = new Person(person.getName(), person.getPhone(), person.getEmail(), person.getAddress(),
+                person.getTags(), updatedTransactions);
+        setPerson(person, updatedPerson);
     }
 
     @Override

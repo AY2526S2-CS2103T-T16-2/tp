@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.commons.core.index.Index;
 import seedu.address.model.person.Person;
 
 /**
@@ -62,6 +63,11 @@ public interface Model {
      * The person must exist in the address book.
      */
     void deletePerson(Person target);
+
+    /**
+     * Deletes the transaction at {@code transactionIndex} for the given {@code person}.
+     */
+    void deleteTransaction(Person person, Index transactionIndex);
 
     /**
      * Adds the given person.

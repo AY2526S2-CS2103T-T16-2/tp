@@ -46,6 +46,9 @@ public class LoanListPanel extends UiPart<Region> {
     @FXML
     private TableColumn<Loan, String> dateColumn;
 
+    /**
+     * Creates a loan list panel showing no selection initially.
+     */
     public LoanListPanel() {
         super(FXML);
         showNoSelection();
@@ -76,6 +79,11 @@ public class LoanListPanel extends UiPart<Region> {
                 new ReadOnlyStringWrapper(cellData.getValue().getLastRecalculatedDate().toString()));
     }
 
+    /**
+     * Displays the transactions (loans) belonging to the given person.
+     *
+     * @param person The selected person. If null, the panel resets to the no-selection state.
+     */
     public void displayPerson(Person person) {
         if (person == null) {
             showNoSelection();
@@ -117,4 +125,3 @@ public class LoanListPanel extends UiPart<Region> {
         }
     }
 }
-

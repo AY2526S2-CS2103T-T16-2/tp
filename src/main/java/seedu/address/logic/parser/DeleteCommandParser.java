@@ -11,14 +11,25 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class DeleteCommandParser implements Parser<DeleteCommand> {
 
+    private static final Prefix PREFIX_TRANSACTION = new Prefix("t/");
+
     /**
      * Parses the given {@code String} of arguments in the context of the DeleteCommand
      * and returns a DeleteCommand object for execution.
      * @throws ParseException if the user input does not conform the expected format
      */
     public DeleteCommand parse(String args) throws ParseException {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_TRANSACTION);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_TRANSACTION);
+
         try {
-            Index index = ParserUtil.parseIndex(args);
+            Index index = ParserUtil.parseIndex(argMultimap.getPreamble());
+
+            if (argMultimap.getValue(PREFIX_TRANSACTION).isPresent()) {
+                Index transactionIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_TRANSACTION).get());
+                return new DeleteCommand(index, transactionIndex);
+            }
+
             return new DeleteCommand(index);
         } catch (ParseException pe) {
             throw new ParseException(

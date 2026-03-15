@@ -16,13 +16,29 @@ public class ResultDisplay extends UiPart<Region> {
     @FXML
     private TextArea resultDisplay;
 
+    /**
+     * Creates a result display.
+     */
     public ResultDisplay() {
         super(FXML);
     }
 
+    /**
+     * Sets the feedback text shown in the result display.
+     */
     public void setFeedbackToUser(String feedbackToUser) {
         requireNonNull(feedbackToUser);
         resultDisplay.setText(feedbackToUser);
+    }
+
+    /**
+     * Updates the styling of the result display based on whether the last command succeeded.
+     *
+     * @param isSuccess true if the last command succeeded, false otherwise.
+     */
+    public void setCommandSuccess(boolean isSuccess) {
+        resultDisplay.getStyleClass().removeAll("result-success", "result-error");
+        resultDisplay.getStyleClass().add(isSuccess ? "result-success" : "result-error");
     }
 
 }

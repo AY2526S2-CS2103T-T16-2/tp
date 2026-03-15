@@ -2,8 +2,10 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
@@ -16,6 +18,7 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Person;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -32,6 +35,7 @@ public class MainWindow extends UiPart<Stage> {
 
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
+    private LoanListPanel loanListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
 
@@ -45,7 +49,13 @@ public class MainWindow extends UiPart<Stage> {
     private StackPane personListPanelPlaceholder;
 
     @FXML
+    private StackPane loanListPanelPlaceholder;
+
+    @FXML
     private StackPane resultDisplayPlaceholder;
+
+    @FXML
+    private Label activeContactsLabel;
 
     @FXML
     private StackPane statusbarPlaceholder;
@@ -113,6 +123,13 @@ public class MainWindow extends UiPart<Stage> {
         personListPanel = new PersonListPanel(logic.getFilteredPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
 
+        loanListPanel = new LoanListPanel();
+        loanListPanelPlaceholder.getChildren().add(loanListPanel.getRoot());
+        personListPanel.setSelectionListener(loanListPanel::displayPerson);
+
+        updateActiveContactsCount();
+        logic.getFilteredPersonList().addListener((ListChangeListener<Person>) c -> updateActiveContactsCount());
+
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
 
@@ -121,6 +138,10 @@ public class MainWindow extends UiPart<Stage> {
 
         CommandBox commandBox = new CommandBox(this::executeCommand);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
+    }
+
+    private void updateActiveContactsCount() {
+        activeContactsLabel.setText(UiMessages.activeContactsTitle(logic.getFilteredPersonList().size()));
     }
 
     /**
@@ -176,7 +197,8 @@ public class MainWindow extends UiPart<Stage> {
         try {
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
-            resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
+            resultDisplay.setCommandSuccess(true);
+            resultDisplay.setFeedbackToUser(UiMessages.success(commandResult.getFeedbackToUser()));
 
             if (commandResult.isShowHelp()) {
                 handleHelp();
@@ -189,7 +211,8 @@ public class MainWindow extends UiPart<Stage> {
             return commandResult;
         } catch (CommandException | ParseException e) {
             logger.info("An error occurred while executing command: " + commandText);
-            resultDisplay.setFeedbackToUser(e.getMessage());
+            resultDisplay.setCommandSuccess(false);
+            resultDisplay.setFeedbackToUser(UiMessages.error(e.getMessage()));
             throw e;
         }
     }

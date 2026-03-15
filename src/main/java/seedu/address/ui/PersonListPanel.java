@@ -1,5 +1,8 @@
 package seedu.address.ui;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
@@ -27,6 +30,17 @@ public class PersonListPanel extends UiPart<Region> {
         super(FXML);
         personListView.setItems(personList);
         personListView.setCellFactory(listView -> new PersonListViewCell());
+    }
+
+    /**
+     * Sets a listener that is invoked whenever the selected person changes.
+     *
+     * @param listener listener that accepts the new selection (can be null when selection is cleared)
+     */
+    public void setSelectionListener(Consumer<Person> listener) {
+        requireNonNull(listener);
+        personListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+                listener.accept(newValue));
     }
 
     /**

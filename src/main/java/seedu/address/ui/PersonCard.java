@@ -40,7 +40,11 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label email;
     @FXML
-    private Label balance;
+    private Label debtsPrefix;
+    @FXML
+    private Label debtsAmount;
+    @FXML
+    private Label debtsSuffix;
     @FXML
     private FlowPane tags;
 
@@ -55,7 +59,7 @@ public class PersonCard extends UiPart<Region> {
         phone.setText(person.getPhone().value);
         address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
-        balance.setText(formatBalance(person));
+        setActiveDebts(person);
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
@@ -75,5 +79,30 @@ public class PersonCard extends UiPart<Region> {
         }
 
         return String.format("They owe you: $%.2f", Math.abs(total));
+    }
+
+    private void setActiveDebts(Person person) {
+        double total = person.getLoans().stream()
+                .mapToDouble(Loan::getCurrAmount)
+                .sum();
+
+        debtsAmount.getStyleClass().removeAll("debts-owe", "debts-lent");
+
+        if (person.getLoans().isEmpty() || Math.abs(total) < 0.005) {
+            debtsAmount.setText("$0.00");
+            debtsSuffix.setText("");
+            return;
+        }
+
+        if (total > 0) {
+            debtsAmount.setText(String.format("-$%.2f", total));
+            debtsAmount.getStyleClass().add("debts-owe");
+            debtsSuffix.setText("(Owe)");
+            return;
+        }
+
+        debtsAmount.setText(String.format("+$%.2f", Math.abs(total)));
+        debtsAmount.getStyleClass().add("debts-lent");
+        debtsSuffix.setText("(Lent)");
     }
 }

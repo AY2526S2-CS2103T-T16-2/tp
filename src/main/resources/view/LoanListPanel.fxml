@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" spacing="6" styleClass="loan-list-panel">
+  <Label fx:id="title" text="Transactions - Select a person" styleClass="panel-title" />
+  <TableView fx:id="loanTable" VBox.vgrow="ALWAYS">
+    <columns>
+      <TableColumn fx:id="indexColumn" text="#" prefWidth="40" />
+      <TableColumn fx:id="typeColumn" text="Type" prefWidth="80" />
+      <TableColumn fx:id="amountColumn" text="Amount" prefWidth="90" />
+      <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="220" />
+      <TableColumn fx:id="statusColumn" text="Status" prefWidth="100" />
+      <TableColumn fx:id="dateColumn" text="Date" prefWidth="110" />
+    </columns>
+  </TableView>
+</VBox>

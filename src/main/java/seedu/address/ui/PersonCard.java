@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.loan.Loan;
 import seedu.address.model.person.Person;
 
 /**
@@ -39,6 +40,8 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label email;
     @FXML
+    private Label balance;
+    @FXML
     private FlowPane tags;
 
     /**
@@ -52,8 +55,25 @@ public class PersonCard extends UiPart<Region> {
         phone.setText(person.getPhone().value);
         address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
+        balance.setText(formatBalance(person));
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+    }
+
+    static String formatBalance(Person person) {
+        double total = person.getLoans().stream()
+                .mapToDouble(Loan::getCurrAmount)
+                .sum();
+
+        if (person.getLoans().isEmpty() || Math.abs(total) < 0.005) {
+            return "Balance: $0.00";
+        }
+
+        if (total > 0) {
+            return String.format("You owe: $%.2f", total);
+        }
+
+        return String.format("They owe you: $%.2f", Math.abs(total));
     }
 }

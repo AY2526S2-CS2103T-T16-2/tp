@@ -11,9 +11,9 @@ import java.util.Set;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
-import seedu.address.model.loan.Loan;
-import seedu.address.model.loan.MonthlyLoan;
-import seedu.address.model.loan.YearlyLoan;
+import seedu.address.model.transaction.Loan;
+import seedu.address.model.transaction.MonthlyLoan;
+import seedu.address.model.transaction.YearlyLoan;
 import seedu.address.model.person.Person;
 import seedu.address.model.tag.Tag;
 

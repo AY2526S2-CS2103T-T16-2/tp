@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.model.loan.Loan;
-import seedu.address.model.loan.MonthlyLoan;
-import seedu.address.model.loan.YearlyLoan;
+import seedu.address.model.transaction.Loan;
+import seedu.address.model.transaction.MonthlyLoan;
+import seedu.address.model.transaction.YearlyLoan;
 
 /**
  * Jackson-friendly version of {@link Loan}.

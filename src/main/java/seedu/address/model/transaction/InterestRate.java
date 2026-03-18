@@ -1,4 +1,4 @@
-package seedu.address.model.loan;
+package seedu.address.model.transaction;
 
 /**
  * Represents the interest rate applied to a loan.

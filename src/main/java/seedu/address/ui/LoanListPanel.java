@@ -15,8 +15,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Region;
-import seedu.address.model.transaction.Loan;
 import seedu.address.model.person.Person;
+import seedu.address.model.transaction.Loan;
 
 /**
  * Panel that displays transactions (loans) for the currently selected person.

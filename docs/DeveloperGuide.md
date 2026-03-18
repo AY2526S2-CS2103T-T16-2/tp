@@ -262,13 +262,13 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
-* prefer desktop apps over other types
-* can type fast
-* prefers typing to mouse interactions
-* is reasonably comfortable using CLI apps
+* has a need to manage a significant number of small to medium financial interactions (debts and loans) with various contacts
+* prefer using a dedicated desktop application over mobile apps or spreadsheets for financial logging
+* can type quickly and prefers keyboard shortcuts/commands over navigating nested menus with a mouse
+* prefer keeping financial data stored locally rather than on a cloud-based service.
+* is reasonably comfortable using CLI applications and appreciates the precision of text-based input
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: streamline debt and loan management by allowing users to record, track, and settle transactions significantly faster than traditional GUI-driven apps or manual ledger entries
 
 
 ### User stories

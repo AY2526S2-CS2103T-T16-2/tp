@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.model.loan.Loan;
-import seedu.address.model.loan.MonthlyLoan;
-import seedu.address.model.loan.YearlyLoan;
+import seedu.address.model.transaction.Loan;
+import seedu.address.model.transaction.MonthlyLoan;
+import seedu.address.model.transaction.YearlyLoan;
 
 public class JsonAdaptedLoanTest {
 

@@ -22,7 +22,7 @@ import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.loan.Loan;
+import seedu.address.model.transaction.Loan;
 import seedu.address.model.person.Person;
 
 /**

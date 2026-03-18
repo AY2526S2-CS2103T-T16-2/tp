@@ -16,8 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import seedu.address.model.AddressBook;
-import seedu.address.model.loan.MonthlyLoan;
-import seedu.address.model.loan.YearlyLoan;
+import seedu.address.model.transaction.MonthlyLoan;
+import seedu.address.model.transaction.YearlyLoan;
 import seedu.address.model.person.Person;
 
 /**

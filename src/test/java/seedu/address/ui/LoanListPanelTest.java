@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.loan.Loan;
+import seedu.address.model.transaction.Loan;
 import seedu.address.testutil.PersonBuilder;
 
 public class LoanListPanelTest {

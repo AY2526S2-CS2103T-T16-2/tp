@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.loan.Loan;
+import seedu.address.model.transaction.Loan;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 

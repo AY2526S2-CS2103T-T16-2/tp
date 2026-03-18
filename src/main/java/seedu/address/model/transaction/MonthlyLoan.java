@@ -1,4 +1,4 @@
-package seedu.address.model.loan;
+package seedu.address.model.transaction;
 
 /**
  * Represents a loan where interest is compounded monthly.

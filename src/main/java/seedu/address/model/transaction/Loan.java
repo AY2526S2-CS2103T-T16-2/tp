@@ -1,4 +1,4 @@
-package seedu.address.model.loan;
+package seedu.address.model.transaction;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

@@ -15,7 +15,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Region;
-import seedu.address.model.loan.Loan;
+import seedu.address.model.transaction.Loan;
 import seedu.address.model.person.Person;
 
 /**

@@ -15,9 +15,8 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.transaction.Amount;
-import seedu.address.model.transaction.MonthlyTransaction;
-import seedu.address.model.transaction.Transaction;
-import seedu.address.model.transaction.YearlyTransaction;
+import seedu.address.model.transaction.TransactionDescriptor;
+import seedu.address.model.transaction.TransactionDescriptor.CompoundingType;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -25,6 +24,11 @@ import seedu.address.model.transaction.YearlyTransaction;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
+
+    public static final String MESSAGE_INVALID_TRANSACTION =
+            "Transaction details should be in the form '[m|y ] amount, rate, description',"
+                    + " where amount is positive and rate is between 0 and 100 "
+                    + "e.g. '10, 5, lunch' or 'm 10, 5, lunch'";
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -127,37 +131,52 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String transactionArguments} into a {@code Transaction}.
+     * Parses a {@code String transactionDetails} into a {@code TransactionDescriptor}.
      * Leading and trailing whitespaces will be trimmed.
+     *
+     * <p>Expected format: {@code [m|y ]amount, rate, description}
+     * e.g. {@code 10, 5, lunch} or {@code m 10, 5, lunch}
+     *
+     * <p>The debtor and creditor are NOT part of the transaction prefix value —
+     * they are passed as separate index arguments to {@code AddTransactionCommandParser}.
      *
      * @throws ParseException if the given {@code transactionDetails} is invalid.
      */
-    public static Transaction parseTransaction(String transactionDetails) throws ParseException {
+    public static TransactionDescriptor parseTransactionDescriptor(String transactionDetails) throws ParseException {
         requireNonNull(transactionDetails);
-        String trimmedTransactionDetails = transactionDetails.trim();
-        if (!Transaction.isValidTransactionArguments(trimmedTransactionDetails)) {
-            throw new ParseException(Transaction.MESSAGE_CONSTRAINTS);
+        String trimmed = transactionDetails.trim();
+        String lowercased = trimmed.toLowerCase();
+
+        CompoundingType compoundingType = CompoundingType.NONE;
+        String withoutType = trimmed;
+
+        if (lowercased.startsWith("m ")) {
+            compoundingType = CompoundingType.MONTHLY;
+            withoutType = trimmed.substring(2);
+        } else if (lowercased.startsWith("y ")) {
+            compoundingType = CompoundingType.YEARLY;
+            withoutType = trimmed.substring(2);
         }
 
-        String lowercasedTransactionDetails = trimmedTransactionDetails.toLowerCase();
-        String transactionDetailsWithoutType = trimmedTransactionDetails;
+        // Expected format after stripping type: amount, rate, description
+        String[] parts = withoutType.split("\\s*,\\s*", 3);
 
-        if (lowercasedTransactionDetails.startsWith("m ") || lowercasedTransactionDetails.startsWith("y ")) {
-            transactionDetailsWithoutType = trimmedTransactionDetails.substring(2);
+        if (parts.length != 3) {
+            throw new ParseException(MESSAGE_INVALID_TRANSACTION);
         }
 
-        String[] parts = transactionDetailsWithoutType.split("\\s*,\\s*", 3);
+        try {
+            double amount = Double.parseDouble(parts[0].trim());
+            double rate = Double.parseDouble(parts[1].trim());
+            String description = parts[2].trim();
 
-        double amount = Double.parseDouble(parts[0]);
-        double rate = Double.parseDouble(parts[1]);
-        String description = parts[2];
+            if (amount < 0 || rate < 0 || rate > 100 || description.isEmpty()) {
+                throw new ParseException(MESSAGE_INVALID_TRANSACTION);
+            }
 
-        if (lowercasedTransactionDetails.startsWith("m ")) {
-            return new MonthlyTransaction(amount, rate, description);
-        } else if (lowercasedTransactionDetails.startsWith("y ")) {
-            return new YearlyTransaction(amount, rate, description);
-        } else {
-            return new Transaction(amount, rate, description);
+            return new TransactionDescriptor(compoundingType, amount, rate, description);
+        } catch (NumberFormatException e) {
+            throw new ParseException(MESSAGE_INVALID_TRANSACTION);
         }
     }
 
@@ -174,17 +193,5 @@ public class ParserUtil {
             throw new ParseException(Amount.MESSAGE_CONSTRAINTS);
         }
         return new Amount(trimmedAmount);
-    }
-
-    /**
-     * Parses {@code Collection<String> transactions} into a {@code Set<Transaction>}.
-     */
-    public static Set<Transaction> parseTransactions(Collection<String> transactions) throws ParseException {
-        requireNonNull(transactions);
-        final Set<Transaction> transactionSet = new HashSet<>();
-        for (String transactionDetails : transactions) {
-            transactionSet.add(parseTransaction(transactionDetails));
-        }
-        return transactionSet;
     }
 }

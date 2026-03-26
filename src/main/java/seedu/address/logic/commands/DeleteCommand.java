@@ -2,7 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -75,7 +75,9 @@ public class DeleteCommand extends Command {
      * Deletes a specific transaction from the given {@code person}.
      */
     private CommandResult deleteTransaction(Model model, Person person) throws CommandException {
-        List<Transaction> transactions = new ArrayList<>(person.getTransactions());
+        List<Transaction> transactions = person.getTransactions().stream()
+                .sorted(Comparator.comparingDouble(Transaction::getCurrAmount).reversed())
+                .collect(java.util.stream.Collectors.toList());
         if (transactions.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_NO_TRANSACTIONS, person.getName()));
         }

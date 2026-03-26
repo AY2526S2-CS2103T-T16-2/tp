@@ -2,8 +2,9 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -54,7 +55,9 @@ public class SettleTransactionCommand extends Command {
         }
 
         Person person = lastShownList.get(personIndex.getZeroBased());
-        List<Transaction> transactions = new ArrayList<>(person.getTransactions());
+        List<Transaction> transactions = person.getTransactions().stream()
+                .sorted(Comparator.comparingDouble(Transaction::getCurrAmount).reversed())
+                .collect(Collectors.toList());
 
         if (transactions.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_NO_TRANSACTIONS, person.getName()));
@@ -71,8 +74,17 @@ public class SettleTransactionCommand extends Command {
         }
 
         transaction.settle();
-        // Trigger model/UI refresh by setting the person to itself.
+
+        // Refresh both parties so their PersonCard balances update immediately.
+        // The transaction is shared between debtor and creditor (same object), so
+        // both already see the settled state — we just need to trigger UI re-renders.
         model.setPerson(person, person);
+        Person other = person.equals(transaction.getDebtor())
+                ? transaction.getCreditor() : transaction.getDebtor();
+        lastShownList.stream()
+                .filter(p -> p.equals(other))
+                .findFirst()
+                .ifPresent(otherInList -> model.setPerson(otherInList, otherInList));
 
         return new CommandResult(String.format(MESSAGE_SUCCESS,
                 transactionIndex.getOneBased(), Messages.format(person)));

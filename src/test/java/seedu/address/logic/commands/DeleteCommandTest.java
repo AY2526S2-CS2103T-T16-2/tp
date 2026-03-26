@@ -137,13 +137,20 @@ public class DeleteCommandTest {
         expectedModel.setPerson(personToModify, updatedPerson);
         expectedModel.setPerson(otherPerson, updatedOtherPerson);
 
+        // Format transaction details to match DeleteCommand
+        String transactionDetails = String.format("$%.2f | %s | %s → %s",
+                transactionToDelete.getCurrAmount(),
+                transactionToDelete.getDescription(),
+                transactionToDelete.getDebtor().getName(),
+                transactionToDelete.getCreditor().getName());
+
         String expectedMessage = String.format(
                 DeleteCommand.MESSAGE_DELETE_TRANSACTION_SUCCESS,
-                transactionIndex.getOneBased()
+                transactionIndex.getOneBased(),
+                transactionDetails
         );
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
-
 
         Person resultPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person resultOther = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
@@ -151,7 +158,6 @@ public class DeleteCommandTest {
         assertFalse(resultPerson.getTransactions().contains(transactionToDelete));
         assertFalse(resultOther.getTransactions().contains(transactionToDelete));
     }
-
 
     @Test
     public void execute_invalidTransactionIndex_throwsCommandException() {

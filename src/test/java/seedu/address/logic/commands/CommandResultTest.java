@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.OptionalInt;
+
 import org.junit.jupiter.api.Test;
 
 public class CommandResultTest {
@@ -55,9 +57,26 @@ public class CommandResultTest {
     @Test
     public void toStringMethod() {
         CommandResult commandResult = new CommandResult("feedback");
-        String expected = CommandResult.class.getCanonicalName() + "{feedbackToUser="
-                + commandResult.getFeedbackToUser() + ", showHelp=" + commandResult.isShowHelp()
-                + ", exit=" + commandResult.isExit() + "}";
+
+        // Updated expected string to include personIndexToRefresh
+        String expected = CommandResult.class.getCanonicalName()
+                + "{feedbackToUser=" + commandResult.getFeedbackToUser()
+                + ", showHelp=" + commandResult.isShowHelp()
+                + ", exit=" + commandResult.isExit()
+                + ", personIndexToRefresh=" + commandResult.getPersonIndexToRefresh() + "}";
+
+        assertEquals(expected, commandResult.toString());
+    }
+
+    @Test
+    public void toStringMethod_withPersonIndex() {
+        // Test CommandResult constructed with personOneBased index
+        CommandResult commandResult = new CommandResult("feedback", 2);
+        String expected = CommandResult.class.getCanonicalName()
+                + "{feedbackToUser=" + commandResult.getFeedbackToUser()
+                + ", showHelp=" + commandResult.isShowHelp()
+                + ", exit=" + commandResult.isExit()
+                + ", personIndexToRefresh=" + commandResult.getPersonIndexToRefresh() + "}";
         assertEquals(expected, commandResult.toString());
     }
 }

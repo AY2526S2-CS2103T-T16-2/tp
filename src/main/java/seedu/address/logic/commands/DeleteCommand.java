@@ -40,16 +40,34 @@ public class DeleteCommand extends Command {
     private final Index targetIndex;
     private final Index targetTransactionIndex;
 
+    /**
+     * Creates a DeleteCommand to delete a person.
+     *
+     * @param targetIndex index of the person in the displayed list
+     */
     public DeleteCommand(Index targetIndex) {
         this(targetIndex, null);
     }
 
+    /**
+     * Creates a DeleteCommand to delete a person or a specific transaction.
+     *
+     * @param targetIndex index of the person in the displayed list
+     * @param targetTransactionIndex index of the transaction to delete; null if deleting the person
+     */
     public DeleteCommand(Index targetIndex, Index targetTransactionIndex) {
         requireNonNull(targetIndex);
         this.targetIndex = targetIndex;
         this.targetTransactionIndex = targetTransactionIndex;
     }
 
+    /**
+     * Executes the delete command.
+     *
+     * @param model {@code Model} which the command should operate on
+     * @return CommandResult containing the result message
+     * @throws CommandException if the target index is invalid or transaction cannot be deleted
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
@@ -72,6 +90,11 @@ public class DeleteCommand extends Command {
 
     /**
      * Deletes a specific transaction from BOTH involved persons.
+     *
+     * @param model the {@code Model} to modify
+     * @param person the person whose transaction is to be deleted
+     * @return CommandResult containing the transaction deletion message
+     * @throws CommandException if transaction list is empty or index invalid
      */
     private CommandResult deleteTransaction(Model model, Person person) throws CommandException {
 
@@ -89,20 +112,16 @@ public class DeleteCommand extends Command {
 
         Transaction transactionToDelete = transactions.get(targetTransactionIndex.getZeroBased());
 
-        // --- Identify the other person involved ---
         Person debtor = transactionToDelete.getDebtor();
         Person creditor = transactionToDelete.getCreditor();
 
         Person otherPerson = debtor.equals(person) ? creditor : debtor;
 
-        // --- Create updated persons ---
         Person updatedPerson = createPersonWithoutTransaction(person, transactionToDelete);
         Person updatedOtherPerson = createPersonWithoutTransaction(otherPerson, transactionToDelete);
 
-        // --- Update model ---
         model.setPerson(person, updatedPerson);
 
-        // Avoid double-setting if self-transaction (edge case safety)
         if (!person.equals(otherPerson)) {
             model.setPerson(otherPerson, updatedOtherPerson);
         }
@@ -121,6 +140,9 @@ public class DeleteCommand extends Command {
 
     /**
      * Returns a user-friendly string representation of a transaction.
+     *
+     * @param t the transaction
+     * @return formatted transaction string
      */
     private String formatTransaction(Transaction t) {
         return String.format("$%.2f | %s | %s → %s",
@@ -132,6 +154,10 @@ public class DeleteCommand extends Command {
 
     /**
      * Creates and returns a {@code Person} with the given transaction removed.
+     *
+     * @param person the original person
+     * @param transactionToRemove the transaction to remove
+     * @return a new person object with the transaction removed
      */
     private static Person createPersonWithoutTransaction(Person person, Transaction transactionToRemove) {
         Set<Transaction> updatedTransactions = new HashSet<>(person.getTransactions());
@@ -147,6 +173,12 @@ public class DeleteCommand extends Command {
         );
     }
 
+    /**
+     * Compares this command with another object for equality.
+     *
+     * @param other the other object
+     * @return true if equal
+     */
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -160,6 +192,11 @@ public class DeleteCommand extends Command {
                 && Objects.equals(targetTransactionIndex, otherDeleteCommand.targetTransactionIndex);
     }
 
+    /**
+     * Returns a string representation of the DeleteCommand.
+     *
+     * @return string representation
+     */
     @Override
     public String toString() {
         return new ToStringBuilder(this)

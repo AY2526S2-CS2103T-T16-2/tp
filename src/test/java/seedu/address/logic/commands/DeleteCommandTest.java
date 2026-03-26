@@ -10,10 +10,9 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +41,7 @@ public class DeleteCommandTest {
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 Messages.format(personToDelete));
 
-        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
@@ -78,7 +77,6 @@ public class DeleteCommandTest {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
         Index outOfBoundIndex = INDEX_SECOND_PERSON;
-        // ensures that outOfBoundIndex is still in bounds of address book list
         assertTrue(outOfBoundIndex.getZeroBased() < model.getAddressBook().getPersonList().size());
 
         DeleteCommand deleteCommand = new DeleteCommand(outOfBoundIndex);
@@ -87,45 +85,68 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void execute_validTransactionIndexUnfilteredList_success() {
-        Index transactionIndex = Index.fromOneBased(1);
-        Person personToModify = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+    public void execute_validTransactionIndexUnfilteredList_success() throws Exception {
+        // Get first two persons in the address book
+        Person personToModify = model.getFilteredPersonList().get(0);
+        Person otherPerson = model.getFilteredPersonList().get(1);
 
-        // Ensure there is at least one transaction to delete.
-        Person otherPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        Transaction seedTransaction = new MonthlyTransaction(personToModify, otherPerson, 10.0, 0.0, "seed");
+        // Seed a transaction between them
+        Transaction seedTransaction = new MonthlyTransaction(
+                personToModify, otherPerson, 10.0, 0.0, "Test Transaction");
         personToModify.appendTransaction(seedTransaction);
         otherPerson.appendTransaction(seedTransaction);
 
-        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON, transactionIndex);
+        // Use index 0 for person and transaction
+        Index personIndex = Index.fromZeroBased(0);
+        Index transactionIndex = Index.fromZeroBased(0);
 
+        // Sort transactions the same way DeleteCommand does
+        List<Transaction> transactions = personToModify.getTransactions().stream()
+                .sorted(Comparator.comparingDouble(Transaction::getCurrAmount).reversed())
+                .collect(Collectors.toList());
 
-        List<Transaction> transactions = new ArrayList<>(personToModify.getTransactions());
         Transaction transactionToDelete = transactions.get(transactionIndex.getZeroBased());
-        Set<Transaction> updatedTransactions = new HashSet<>(personToModify.getTransactions());
-        updatedTransactions.remove(transactionToDelete);
-        Person updatedPerson = new Person(personToModify.getName(), personToModify.getPhone(),
-                personToModify.getEmail(), personToModify.getAddress(), personToModify.getTags(), updatedTransactions);
 
+        // Create the delete command
+        DeleteCommand deleteCommand = new DeleteCommand(personIndex, transactionIndex);
 
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setPerson(personToModify, updatedPerson);
-
+        // Prepare expected message
+        String transactionDetails = String.format("$%.2f | %s | %s → %s",
+                transactionToDelete.getCurrAmount(),
+                transactionToDelete.getDescription(),
+                transactionToDelete.getDebtor().getName(),
+                transactionToDelete.getCreditor().getName());
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_TRANSACTION_SUCCESS,
-                transactionIndex.getOneBased());
+                transactionIndex.getOneBased(), transactionDetails);
 
+        // Prepare expected model
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Person expectedPerson = DeleteCommand.createPersonWithoutTransaction(personToModify, transactionToDelete);
+        Person expectedOtherPerson = DeleteCommand.createPersonWithoutTransaction(otherPerson, transactionToDelete);
 
-        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+        expectedModel.setPerson(personToModify, expectedPerson);
+        expectedModel.setPerson(otherPerson, expectedOtherPerson);
+
+        // Execute command
+        CommandResult commandResult = deleteCommand.execute(model);
+
+        // Assertions
+        assertEquals(expectedMessage, commandResult.getFeedbackToUser());
+        assertTrue(commandResult.getPersonIndexToRefresh().isPresent());
+        assertEquals(personIndex.getOneBased(), commandResult.getPersonIndexToRefresh().getAsInt());
+
+        // Check that transaction is removed from both persons
+        Person updatedPerson = model.getFilteredPersonList().get(0);
+        Person updatedOtherPerson = model.getFilteredPersonList().get(1);
+
+        assertFalse(updatedPerson.getTransactions().contains(transactionToDelete));
+        assertFalse(updatedOtherPerson.getTransactions().contains(transactionToDelete));
     }
-
 
     @Test
     public void execute_invalidTransactionIndex_throwsCommandException() {
         Person personToModify = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-
-        // Ensure there is at least one transaction, so this test targets an out-of-range index
-        // rather than the "no transactions found" case.
         Person otherPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
         Transaction seedTransaction = new MonthlyTransaction(personToModify, otherPerson, 10.0, 0.0, "seed");
         personToModify.appendTransaction(seedTransaction);
@@ -135,14 +156,12 @@ public class DeleteCommandTest {
         assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_INVALID_TRANSACTION_DISPLAYED_INDEX);
     }
 
-
     @Test
     public void execute_noTransactionsFound_throwsCommandException() {
         Index personIndex = Index.fromOneBased(5);
         DeleteCommand deleteCommand = new DeleteCommand(personIndex, Index.fromOneBased(1));
         Person person = model.getFilteredPersonList().get(personIndex.getZeroBased());
         String expectedMessage = String.format(DeleteCommand.MESSAGE_NO_TRANSACTIONS, person.getName());
-
 
         assertCommandFailure(deleteCommand, model, expectedMessage);
     }
@@ -155,31 +174,19 @@ public class DeleteCommandTest {
         DeleteCommand deleteFirstTransactionCommand = new DeleteCommand(INDEX_FIRST_PERSON, Index.fromOneBased(1));
         DeleteCommand deleteSecondTransactionCommand = new DeleteCommand(INDEX_FIRST_PERSON, Index.fromOneBased(2));
 
-        // same object -> returns true
         assertTrue(deleteFirstCommand.equals(deleteFirstCommand));
 
-        // same values -> returns true
         DeleteCommand deleteFirstCommandCopy = new DeleteCommand(INDEX_FIRST_PERSON);
         assertTrue(deleteFirstCommand.equals(deleteFirstCommandCopy));
 
         DeleteCommand deleteFirstTransactionCommandCopy =
                 new DeleteCommand(INDEX_FIRST_PERSON, Index.fromOneBased(1));
-
         assertTrue(deleteFirstTransactionCommand.equals(deleteFirstTransactionCommandCopy));
 
-        // different types -> returns false
         assertFalse(deleteFirstCommand.equals(1));
-
-        // null -> returns false
         assertFalse(deleteFirstCommand.equals(null));
-
-        // different person -> returns false
         assertFalse(deleteFirstCommand.equals(deleteSecondCommand));
-
-        // different transaction index -> returns false
         assertFalse(deleteFirstTransactionCommand.equals(deleteSecondTransactionCommand));
-
-        // different command type -> returns false
         assertFalse(deleteFirstCommand.equals(deleteFirstTransactionCommand));
     }
 

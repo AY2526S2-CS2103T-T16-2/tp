@@ -195,4 +195,37 @@ public class TransactionTest {
         Transaction b = new TestTransaction(100, 5, "desc");
         assertEquals(a.hashCode(), b.hashCode());
     }
+
+    // ========== isSettled / settle ==========
+
+    @Test
+    public void isSettled_newTransaction_returnsFalse() {
+        Transaction transaction = new TestTransaction(100, 5, "desc");
+        assertEquals(false, transaction.isSettled());
+    }
+
+    @Test
+    public void settle_marksTransactionAsSettled() {
+        Transaction transaction = new TestTransaction(100, 5, "desc");
+        transaction.settle();
+        assertEquals(true, transaction.isSettled());
+    }
+
+    @Test
+    public void equals_settledAndUnsettled_areEqual() {
+        // isSettled is intentionally excluded from equals to preserve HashSet integrity
+        Transaction a = new TestTransaction(100, 5, "desc");
+        Transaction b = new TestTransaction(100, 5, "desc");
+        b.settle();
+        assertEquals(a, b);
+    }
+
+    @Test
+    public void hashCode_settledAndUnsettled_sameHashCode() {
+        // isSettled is intentionally excluded from hashCode to preserve HashSet integrity
+        Transaction a = new TestTransaction(100, 5, "desc");
+        Transaction b = new TestTransaction(100, 5, "desc");
+        b.settle();
+        assertEquals(a.hashCode(), b.hashCode());
+    }
 }

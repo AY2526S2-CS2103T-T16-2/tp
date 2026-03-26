@@ -27,8 +27,21 @@ public class TransactionListPanelTest {
     }
 
     @Test
-    public void statusText_isPending() {
-        assertEquals("Pending", TransactionListPanel.statusText());
+    public void statusText_unsettled_isPending() {
+        Transaction tx = transaction(10, "Dinner");
+        assertEquals("Pending", TransactionListPanel.statusText(tx));
+    }
+
+    @Test
+    public void statusText_settled_isSettled() {
+        Transaction tx = transaction(10, "Dinner");
+        tx.settle();
+        assertEquals("Settled", TransactionListPanel.statusText(tx));
+    }
+
+    @Test
+    public void statusText_null_throws() {
+        assertThrows(NullPointerException.class, () -> TransactionListPanel.statusText(null));
     }
 
     @Test

@@ -241,6 +241,8 @@ public class MainWindow extends UiPart<Stage> {
             applyResultUpdate(new ResultDisplayAdapter(resultDisplay),
                     successUpdate(commandResult.getFeedbackToUser()));
 
+            transactionListPanel.displayPerson(personListPanel.getSelectedPerson());
+
             if (commandResult.isShowHelp()) {
                 handleHelp();
             }

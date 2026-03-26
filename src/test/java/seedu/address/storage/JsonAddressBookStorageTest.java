@@ -2,6 +2,7 @@ package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.HOON;
@@ -11,6 +12,8 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -18,6 +21,9 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.person.Person;
+import seedu.address.model.transaction.Transaction;
+import seedu.address.testutil.PersonBuilder;
 
 public class JsonAddressBookStorageTest {
     private static final Path TEST_DATA_FOLDER = Paths.get("src", "test", "data", "JsonAddressBookStorageTest");
@@ -106,5 +112,34 @@ public class JsonAddressBookStorageTest {
     @Test
     public void saveAddressBook_nullFilePath_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> saveAddressBook(new AddressBook(), null));
+    }
+
+    @Test
+    public void saveAndReadAddressBook_settledTransaction_persistsSettledState() throws Exception {
+        Path filePath = testFolder.resolve("SettledTransactionTest.json");
+        JsonAddressBookStorage storage = new JsonAddressBookStorage(filePath);
+
+        AddressBook addressBook = new AddressBook();
+        Person debtor = new PersonBuilder().withName("Debtor Person").build();
+        Person creditor = new PersonBuilder().withName("Creditor Person").build();
+        addressBook.addPerson(debtor);
+        addressBook.addPerson(creditor);
+
+        Transaction tx = new Transaction(debtor, creditor, 50.0, 0.0, "test debt");
+        debtor.appendTransaction(tx);
+        creditor.appendTransaction(tx);
+        tx.settle();
+
+        storage.saveAddressBook(addressBook, filePath);
+        ReadOnlyAddressBook readBack = storage.readAddressBook(filePath).get();
+
+        List<Person> persons = readBack.getPersonList();
+        Person restoredDebtor = persons.stream()
+                .filter(p -> p.getName().fullName.equals("Debtor Person"))
+                .findFirst().get();
+
+        List<Transaction> transactions = new ArrayList<>(restoredDebtor.getTransactions());
+        assertEquals(1, transactions.size());
+        assertTrue(transactions.get(0).isSettled());
     }
 }

@@ -94,10 +94,12 @@ public class PersonCard extends UiPart<Region> {
 
     static String formatBalance(Person person) {
         double total = person.getTransactions().stream()
+                .filter(t -> !t.isSettled())
                 .mapToDouble(Transaction::getCurrAmount)
                 .sum();
 
-        if (person.getTransactions().isEmpty() || Math.abs(total) < NEAR_ZERO_THRESHOLD) {
+        long unsettledCount = person.getTransactions().stream().filter(t -> !t.isSettled()).count();
+        if (unsettledCount == 0 || Math.abs(total) < NEAR_ZERO_THRESHOLD) {
             return "Balance: $0.00";
         }
 
@@ -120,10 +122,12 @@ public class PersonCard extends UiPart<Region> {
 
     static ActiveDebtsModel activeDebtsModelFor(Person person) {
         double total = person.getTransactions().stream()
+                .filter(t -> !t.isSettled())
                 .mapToDouble(Transaction::getCurrAmount)
                 .sum();
 
-        if (person.getTransactions().isEmpty() || Math.abs(total) < NEAR_ZERO_THRESHOLD) {
+        long unsettledCount = person.getTransactions().stream().filter(t -> !t.isSettled()).count();
+        if (unsettledCount == 0 || Math.abs(total) < NEAR_ZERO_THRESHOLD) {
             return new ActiveDebtsModel("$0.00", "", null);
         }
 

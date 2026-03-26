@@ -89,4 +89,32 @@ public class PersonCardTest {
         assertEquals("", model.getSuffixText());
         assertEquals(null, model.getStyleClass());
     }
+
+    @Test
+    public void formatBalance_settledTransactionExcluded() {
+        Transaction settled = transaction(50.0, "Settled debt");
+        settled.settle();
+        Person person = new PersonBuilder().withTransactions(settled).build();
+        assertEquals("Balance: $0.00", PersonCard.formatBalance(person));
+    }
+
+    @Test
+    public void formatBalance_mixedSettledAndUnsettled_onlyCountsUnsettled() {
+        Transaction settled = transaction(100.0, "Old debt");
+        settled.settle();
+        Transaction active = transaction(30.0, "New debt");
+        Person person = new PersonBuilder().withTransactions(settled, active).build();
+        assertEquals("You owe: $30.00", PersonCard.formatBalance(person));
+    }
+
+    @Test
+    public void activeDebtsModel_settledTransactionExcluded_showsZero() {
+        Transaction settled = transaction(50.0, "Settled debt");
+        settled.settle();
+        Person person = new PersonBuilder().withTransactions(settled).build();
+        PersonCard.ActiveDebtsModel model = PersonCard.activeDebtsModelFor(person);
+        assertEquals("$0.00", model.getAmountText());
+        assertEquals("", model.getSuffixText());
+        assertEquals(null, model.getStyleClass());
+    }
 }

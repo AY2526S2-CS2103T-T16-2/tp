@@ -33,6 +33,13 @@ public class PersonListPanel extends UiPart<Region> {
     }
 
     /**
+     * Returns the currently selected person, or null if no person is selected.
+     */
+    public Person getSelectedPerson() {
+        return personListView.getSelectionModel().getSelectedItem();
+    }
+
+    /**
      * Sets a listener that is invoked whenever the selected person changes.
      *
      * @param listener listener that accepts the new selection (can be null when selection is cleared)

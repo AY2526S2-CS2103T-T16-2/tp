@@ -50,6 +50,9 @@ public class Transaction {
     /** The person who is owed money in this transaction. */
     protected Person creditor;
 
+    /** Whether this transaction has been marked as settled. */
+    protected boolean isSettled = false;
+
     /**
      * Constructs a {@code Transaction} with the specified debtor, creditor, amount,
      * interest rate, and description. The last recalculated date is set to today.
@@ -191,6 +194,20 @@ public class Transaction {
     public void setCreditor(Person creditor) {
         requireNonNull(creditor);
         this.creditor = creditor;
+    }
+
+    /**
+     * Marks this transaction as settled.
+     */
+    public void settle() {
+        this.isSettled = true;
+    }
+
+    /**
+     * Returns whether this transaction has been settled.
+     */
+    public boolean isSettled() {
+        return isSettled;
     }
 
     /**

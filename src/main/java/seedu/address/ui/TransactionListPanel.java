@@ -27,6 +27,7 @@ public class TransactionListPanel extends UiPart<Region> {
 
     private static final String NO_SELECTION_TITLE = "Transactions - Select a person";
     private static final String STATUS_PENDING = "Pending";
+    private static final String STATUS_SETTLED = "Settled";
     private static final String TYPE_OWE = "Owe";
     private static final String TYPE_LENT = "Lent";
     private static final String STYLE_TX_OWE = "tx-type-owe";
@@ -118,7 +119,7 @@ public class TransactionListPanel extends UiPart<Region> {
                 new ReadOnlyStringWrapper(descriptionText(cellData.getValue())));
 
         statusColumn.setCellValueFactory(cellData ->
-                new ReadOnlyStringWrapper(statusText()));
+                new ReadOnlyStringWrapper(statusText(cellData.getValue())));
 
         dateColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(dateText(cellData.getValue())));
@@ -149,10 +150,11 @@ public class TransactionListPanel extends UiPart<Region> {
     }
 
     /**
-     * Returns the label shown in the status column.
+     * Returns the label shown in the status column for the given transaction.
      */
-    static String statusText() {
-        return STATUS_PENDING;
+    static String statusText(Transaction transaction) {
+        Objects.requireNonNull(transaction);
+        return transaction.isSettled() ? STATUS_SETTLED : STATUS_PENDING;
     }
 
     /**

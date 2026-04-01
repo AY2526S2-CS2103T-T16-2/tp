@@ -311,8 +311,8 @@ public class TransactionListPanel extends UiPart<Region> {
 
     /**
      * Maps a type label to the corresponding style class.
-     * @deprecated Use styleClassForDirection() instead.
      * @return style class name, or null if the label is not recognised.
+     * @deprecated Use styleClassForDirection() instead.
      */
     @Deprecated
     static String styleClassForType(String typeLabel) {

@@ -1,4 +1,4 @@
-package seedu.address;
+ package seedu.address;
 
 import java.util.logging.Logger;
 

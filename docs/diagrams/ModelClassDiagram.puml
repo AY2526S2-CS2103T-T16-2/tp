@@ -20,6 +20,8 @@ Class Name
 Class Phone
 Class Tag
 Class Transaction
+Class MonthlyTransaction
+Class YearlyTransaction
 Class InterestRate
 
 Class I #FFFFFF
@@ -49,6 +51,8 @@ Person *-right-> "~* transactions" Transaction
 Transaction -up-> "1" InterestRate
 Transaction "*" -up-> "1" Person : debtor
 Transaction "*" -up-> "1" Person : creditor
+MonthlyTransaction -up-|> Transaction
+YearlyTransaction -up-|> Transaction
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I

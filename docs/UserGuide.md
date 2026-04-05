@@ -3,7 +3,32 @@ layout: page
 title: User Guide
 ---
 
-AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, AB3 can get your contact management tasks done faster than traditional GUI apps.
+# About IOU
+
+## What is IOU?
+IOU is a desktop application designed to help you keep track of small debts and loans between friends, colleagues, or roommates. Prefer typing over clicking? You’ll feel right at home here. Commands let you work fast, while the interface keeps everything visible and organized.
+
+By using simple text commands instead of spreadsheets or mobile apps, IOU allows users to log financial transactions directly from their laptops in seconds. It’s ideal for staying on top of peer-to-peer debts during workdays, social events, or shared living situations.
+
+## Why is this app needed?
+Managing multiple small debts can be tedious and error-prone, especially when relying on spreadsheets or phone apps. These tools can be slow, disruptive, or hard to reference quickly.
+
+IOU provides a keyboard-friendly, streamlined solution that lets users record, check, and update financial records instantly—saving time, reducing mistakes, and keeping your personal finances organized.
+
+## Who are the target users?
+IOU is especially suited for people who:
+* Spend most of their day on a laptop or desktop
+* Handle multiple informal loans or shared expenses
+* Prefer typing commands over navigating menus or clicking buttons
+* Want fast, clear, and organized access to personal finance records
+
+## What value does IOU provide?
+With IOU, users can:
+* Quickly record new debts and loans
+* Track outstanding balances at a glance
+* Keep financial records accurate and up-to-date
+* Replace cluttered spreadsheets with a smooth, efficient workflow
+
 
 * Table of Contents
 {:toc}

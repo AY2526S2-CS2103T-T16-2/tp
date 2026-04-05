@@ -469,6 +469,38 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
+### Adding a Transaction
+
+1. Adding a transaction while all persons are being shown
+
+    1. Prerequisites: List all persons using the `list` command. Multiple persons (at least 2) in the list.
+
+    1. Test case: `addtxn 1 2 a/50 r/5 d/lunch c/m`<br>
+       Expected: A transaction is added from person 1 (debtor) to person 2 (creditor) for an amount of 50 with 5% monthly compounding interest. Details of the added transaction shown in the status message. Timestamp in the status bar is updated.
+
+    1. Test case: `addtxn 1 2 a/50 r/0 d/dinner`<br>
+       Expected: A transaction is added from person 1 to person 2 for an amount of 50 with no interest and no compounding type. Details of the added transaction shown in the status message. Timestamp in the status bar is updated.
+
+    1. Test case: `addtxn 1 2 a/50 r/5`<br>
+       Expected: A transaction is added with no description and no compounding type (optional fields omitted). Details of the added transaction shown in the status message. Timestamp in the status bar is updated.
+
+    1. Test case: `addtxn 0 2 a/50 r/5`<br>
+       Expected: No transaction is added. Error details shown in the status message indicating invalid index. Status bar remains the same.
+
+    1. Test case: `addtxn 1 1 a/50 r/5`<br>
+       Expected: No transaction is added. Error details shown in the status message indicating debtor and creditor cannot be the same person. Status bar remains the same.
+
+    1. Test case: `addtxn 1 2 a/-50 r/5`<br>
+       Expected: No transaction is added. Error details shown in the status message indicating amount must be a positive value. Status bar remains the same.
+
+    1. Test case: `addtxn 1 2 a/50 r/5 c/z`<br>
+       Expected: No transaction is added. Error details shown in the status message indicating compounding type must be `m`, `y`, or `n`. Status bar remains the same.
+
+    1. Other incorrect `addtxn` commands to try: `addtxn`, `addtxn 1 2`, `addtxn 1 2 a/50`, `addtxn x 2 a/50 r/5` (where x is larger than the list size)<br>
+       Expected: Similar to previous. Error details shown in the status message. Status bar remains the same.
+
+    1. _{ more test cases … }_
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files

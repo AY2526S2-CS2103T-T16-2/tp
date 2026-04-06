@@ -21,7 +21,7 @@ public final class FxTestUtil {
     /**
      * Starts the JavaFX toolkit once for UI tests.
      */
-    public static void setUpFxToolkit() {
+    public static void setUpFxToolkit() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         try {
             Platform.startup(latch::countDown);
@@ -33,13 +33,8 @@ public final class FxTestUtil {
             Platform.setImplicitExit(false);
             latch.countDown();
         }
-        try {
-            if (!latch.await(FX_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-                isFxToolkitAvailable = false;
-            }
-        } catch (InterruptedException interruptedException) {
-            Thread.currentThread().interrupt();
-            isFxToolkitAvailable = false;
+        if (!latch.await(FX_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+            throw new AssertionError("Timed out starting JavaFX toolkit");
         }
     }
 

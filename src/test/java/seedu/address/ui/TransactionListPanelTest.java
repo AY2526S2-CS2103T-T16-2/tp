@@ -145,6 +145,19 @@ public class TransactionListPanelTest {
     }
 
     @Test
+    public void statusText_transactionPending_returnsPending() {
+        Transaction transaction = transaction(10, "Dinner");
+        assertEquals("Pending", TransactionListPanel.statusText(transaction));
+    }
+
+    @Test
+    public void statusText_transactionSettled_returnsSettled() {
+        Transaction transaction = transaction(10, "Dinner");
+        transaction.setSettled(true);
+        assertEquals("Settled", TransactionListPanel.statusText(transaction));
+    }
+
+    @Test
     public void typeText_amountPositive_isOwe() {
         assertEquals("Owe", TransactionListPanel.typeText(12.34));
         assertEquals("Owe", TransactionListPanel.typeText(0));
@@ -282,6 +295,45 @@ public class TransactionListPanelTest {
 
         assertEquals("Bernice Yu", panel.otherPartyName(oweTransaction));
         assertEquals("Bernice Yu", panel.otherPartyName(lentTransaction));
+    }
+
+    @Test
+    public void directionTextAndOtherPartyName_sameIdentityDifferentInstance_consistent() {
+        Person selectedAlice = new PersonBuilder()
+                .withName(ALEX)
+                .withPhone("99998888")
+                .withEmail("alex.other@example.com")
+                .withAddress("Other Address")
+                .build();
+        Person debtorAlice = person(ALEX);
+        Person creditorBernice = person(BERNICE);
+
+        Transaction owesTransaction = transaction(debtorAlice, creditorBernice, 12.5, "Dinner");
+        Person displayedPerson = personWithTransactions(ALEX, owesTransaction);
+
+        TransactionListPanel panel = onFx(TransactionListPanel::new);
+        onFxRun(() -> panel.displayPerson(selectedAlice));
+
+        assertEquals("Owe", panel.directionText(owesTransaction));
+        assertEquals("Bernice Yu", panel.otherPartyName(owesTransaction));
+
+        onFxRun(() -> panel.displayPerson(displayedPerson));
+        assertEquals("Owe", panel.directionText(owesTransaction));
+        assertEquals("Bernice Yu", panel.otherPartyName(owesTransaction));
+    }
+
+    @Test
+    public void directionTextAndOtherPartyName_personNotInTransaction_emptyString() {
+        Person notInTransaction = person("Charlotte Oliveiro");
+        Person debtor = person(ALEX);
+        Person creditor = person(BERNICE);
+        Transaction transaction = transaction(debtor, creditor, 10.0, "Snack");
+
+        TransactionListPanel panel = onFx(TransactionListPanel::new);
+        onFxRun(() -> panel.displayPerson(notInTransaction));
+
+        assertEquals("", panel.directionText(transaction));
+        assertEquals("", panel.otherPartyName(transaction));
     }
 
     // FXML initialize coverage

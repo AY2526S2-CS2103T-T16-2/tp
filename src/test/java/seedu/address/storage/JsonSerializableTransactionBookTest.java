@@ -3,13 +3,11 @@ package seedu.address.storage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.person.Person;
 import seedu.address.model.transaction.MonthlyTransaction;
@@ -52,7 +50,7 @@ public class JsonSerializableTransactionBookTest {
     }
 
     @Test
-    public void loadInto_missingMatchedPerson_throwsIllegalValueException() {
+    public void loadInto_missingMatchedPerson_skipsInvalidTransaction() {
         Person debtor = new PersonBuilder().withName("Alice Pauline").build();
         Person creditor = new PersonBuilder().withName("Bob Choo").build();
         JsonAdaptedTransaction adaptedTransaction = new JsonAdaptedTransaction(
@@ -61,8 +59,10 @@ public class JsonSerializableTransactionBookTest {
             new JsonSerializableTransactionBook(List.of(adaptedTransaction));
 
         AddressBook targetBook = new AddressBook();
-        targetBook.addPerson(new PersonBuilder(debtor).build());
+        Person liveDebtor = new PersonBuilder(debtor).build();
+        targetBook.addPerson(liveDebtor);
 
-        assertThrows(IllegalValueException.class, () -> serializableBook.loadInto(targetBook));
+        serializableBook.loadInto(targetBook);
+        assertTrue(liveDebtor.getTransactions().isEmpty());
     }
 }

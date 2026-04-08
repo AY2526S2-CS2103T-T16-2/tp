@@ -31,6 +31,8 @@ public class SettleCommand extends Command {
     public static final String MESSAGE_NO_TRANSACTIONS = "No transactions found for %1$s.";
     public static final String MESSAGE_INVALID_TRANSACTION_DISPLAYED_INDEX =
             "The transaction index provided is invalid";
+    public static final String MESSAGE_ALREADY_SETTLED =
+            "This transaction has already been settled.";
 
     private final Index targetIndex;
     private final Index targetTransactionIndex;
@@ -72,6 +74,9 @@ public class SettleCommand extends Command {
         }
 
         Transaction transactionToSettle = transactions.get(targetTransactionIndex.getZeroBased());
+        if (transactionToSettle.isSettled()) {
+            throw new CommandException(MESSAGE_ALREADY_SETTLED);
+        }
         transactionToSettle.settleTransaction();
 
         String transactionDetails = formatTransaction(transactionToSettle);

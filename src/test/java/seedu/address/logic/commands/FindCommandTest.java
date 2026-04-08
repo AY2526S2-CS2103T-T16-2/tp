@@ -133,7 +133,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_nameFilter_noMatch_emptyResult() {
+    public void execute_nameFilterNoMatch_emptyResult() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.of("Zephyr"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         FindCommand command = new FindCommand(predicate);
@@ -269,7 +269,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_tagFilter_uniqueTag_matchesOne() {
+    public void execute_tagFilterUnique_matchesOne() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("colleagues"));
         FindCommand command = new FindCommand(predicate);
@@ -281,7 +281,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_tagFilter_caseInsensitive_returnsMatch() {
+    public void execute_tagFilterCaseInsensitive_returnsMatch() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("OWESMONEY"));
         FindCommand command = new FindCommand(predicate);
@@ -322,7 +322,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_allFilters_narrows_toOneResult() {
+    public void execute_allFiltersNarrows_toOneResult() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.of("Alice"),
                 Optional.of("lunch"),
@@ -338,7 +338,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_allFilters_noMatchingPerson_emptyResult() {
+    public void execute_allFiltersNoMatching_emptyResult() {
         // alice doesn't have a tag "owesMoney", so this returns 0
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.of("Alice"),

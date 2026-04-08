@@ -95,6 +95,20 @@ public class SettleCommandTest {
     }
 
     @Test
+    public void execute_alreadySettledTransaction_throwsCommandException() throws Exception {
+        Person personToModify = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person otherPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+
+        Transaction seedTransaction = new MonthlyTransaction(personToModify, otherPerson, 10.0, 0.0, "seed");
+        seedTransaction.settleTransaction();
+        personToModify.appendTransaction(seedTransaction);
+        otherPerson.appendTransaction(seedTransaction);
+
+        SettleCommand settleCommand = new SettleCommand(INDEX_FIRST_PERSON, Index.fromOneBased(1));
+        assertCommandFailure(settleCommand, model, SettleCommand.MESSAGE_ALREADY_SETTLED);
+    }
+
+    @Test
     public void execute_validTransactionFilteredList_success() throws CommandException {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 

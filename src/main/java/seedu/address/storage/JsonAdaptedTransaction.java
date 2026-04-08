@@ -28,8 +28,7 @@ class JsonAdaptedTransaction {
      * Constructs a {@code JsonAdaptedTransaction} with the given transaction details.
      */
     @JsonCreator
-    public JsonAdaptedTransaction(@JsonProperty("transactionType") String transactionType,
-                                  @JsonProperty("amount") double amount,
+    public JsonAdaptedTransaction(@JsonProperty("amount") double amount,
                                   @JsonProperty("originalAmount") Double originalAmount,
                                   @JsonProperty("description") String description,
                                   @JsonProperty("debtor") JsonAdaptedPerson debtor,

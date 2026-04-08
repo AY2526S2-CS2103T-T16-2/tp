@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,18 +26,27 @@ public class JsonAdaptedTransactionTest {
         return new PersonBuilder().withName("Creditor").build();
     }
 
+    // ========== JsonCreator ==========
+
     @Test
     public void jsonCreator_validFields_createsTransaction() throws IllegalValueException {
-        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(VALID_AMOUNT, VALID_DESCRIPTION,
-                new JsonAdaptedPerson(debtor()), new JsonAdaptedPerson(creditor()), false);
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(
+                VALID_AMOUNT, VALID_AMOUNT, VALID_DESCRIPTION,
+                new JsonAdaptedPerson(debtor()),
+                new JsonAdaptedPerson(creditor()),
+                false);
+
         Transaction transaction = adapted.toModelType();
-        assertEquals(Transaction.class, transaction.getClass());
+        assertNotNull(transaction);
     }
+
+    // ========== Round Trip ==========
 
     @Test
     public void roundTrip_transaction_preservesCoreFields() throws IllegalValueException {
         Person debtor = debtor();
         Person creditor = creditor();
+
         Transaction original = new Transaction(debtor, creditor, VALID_AMOUNT, VALID_DESCRIPTION);
         original.setSettled(true);
 
@@ -53,10 +63,8 @@ public class JsonAdaptedTransactionTest {
 
     @Test
     public void roundTrip_settledTransaction_preservesOriginalAmount() throws IllegalValueException {
-        Person debtor = debtor();
-        Person creditor = creditor();
-        Transaction original = new Transaction(debtor, creditor, VALID_AMOUNT, VALID_RATE, VALID_DESCRIPTION);
-        original.settleTransaction(); // currAmount becomes 0, originalAmount stays VALID_AMOUNT
+        Transaction original = new Transaction(debtor(), creditor(), VALID_AMOUNT, VALID_DESCRIPTION);
+        original.settleTransaction(); // currAmount = 0
 
         JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(original);
         Transaction restored = adapted.toModelType();
@@ -66,57 +74,86 @@ public class JsonAdaptedTransactionTest {
         assertTrue(restored.isSettled());
     }
 
+    // ========== Original Amount Handling ==========
+
     @Test
     public void jsonCreator_nullOriginalAmount_fallsBackToCurrAmount() throws IllegalValueException {
-        // Simulates loading an old save file that has no originalAmount field
-        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction("", VALID_AMOUNT, null, VALID_RATE,
-                VALID_DESCRIPTION, new JsonAdaptedPerson(debtor()), new JsonAdaptedPerson(creditor()), false);
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(
+                VALID_AMOUNT, null, VALID_DESCRIPTION,
+                new JsonAdaptedPerson(debtor()),
+                new JsonAdaptedPerson(creditor()),
+                false);
+
         Transaction transaction = adapted.toModelType();
+
         assertEquals(VALID_AMOUNT, transaction.getOriginalAmount(), 0.001);
     }
 
     @Test
     public void jsonCreator_explicitOriginalAmount_restoresCorrectly() throws IllegalValueException {
-        double settledCurrAmount = 0.0;
+        double currAmount = 0.0;
         double originalAmount = 500.0;
-        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction("", settledCurrAmount, originalAmount,
-                VALID_RATE, VALID_DESCRIPTION, new JsonAdaptedPerson(debtor()), new JsonAdaptedPerson(creditor()),
+
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(
+                currAmount, originalAmount, VALID_DESCRIPTION,
+                new JsonAdaptedPerson(debtor()),
+                new JsonAdaptedPerson(creditor()),
                 true);
+
         Transaction transaction = adapted.toModelType();
-        assertEquals(settledCurrAmount, transaction.getCurrAmount(), 0.001);
+
+        assertEquals(currAmount, transaction.getCurrAmount(), 0.001);
         assertEquals(originalAmount, transaction.getOriginalAmount(), 0.001);
         assertTrue(transaction.isSettled());
     }
 
+    // ========== Missing Fields ==========
+
     @Test
     public void toModelType_missingDebtor_throwsIllegalValueException() {
-        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(VALID_AMOUNT, VALID_DESCRIPTION,
-                null, new JsonAdaptedPerson(creditor()), false);
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(
+                VALID_AMOUNT, VALID_AMOUNT, VALID_DESCRIPTION,
+                null,
+                new JsonAdaptedPerson(creditor()),
+                false);
+
         assertThrows(IllegalValueException.class, adapted::toModelType);
     }
 
     @Test
     public void toModelType_missingCreditor_throwsIllegalValueException() {
-        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(VALID_AMOUNT, VALID_DESCRIPTION,
-                new JsonAdaptedPerson(debtor()), null, false);
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(
+                VALID_AMOUNT, VALID_AMOUNT, VALID_DESCRIPTION,
+                new JsonAdaptedPerson(debtor()),
+                null,
+                false);
+
         assertThrows(IllegalValueException.class, adapted::toModelType);
     }
 
     @Test
     public void toModelType_missingDescription_throwsIllegalValueException() {
-        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(VALID_AMOUNT, null,
-                new JsonAdaptedPerson(debtor()), new JsonAdaptedPerson(creditor()), false);
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(
+                VALID_AMOUNT, VALID_AMOUNT, null,
+                new JsonAdaptedPerson(debtor()),
+                new JsonAdaptedPerson(creditor()),
+                false);
+
         assertThrows(IllegalValueException.class, adapted::toModelType);
     }
 
+    // ========== Default Settled ==========
+
     @Test
     public void jsonCreator_nullSettled_defaultsToFalse() throws IllegalValueException {
-        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(VALID_AMOUNT, VALID_DESCRIPTION,
-                new JsonAdaptedPerson(debtor()), new JsonAdaptedPerson(creditor()), null);
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(
+                VALID_AMOUNT, VALID_AMOUNT, VALID_DESCRIPTION,
+                new JsonAdaptedPerson(debtor()),
+                new JsonAdaptedPerson(creditor()),
+                null);
 
         Transaction transaction = adapted.toModelType();
 
         assertFalse(transaction.isSettled());
     }
 }
-

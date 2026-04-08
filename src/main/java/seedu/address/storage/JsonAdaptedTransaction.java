@@ -94,13 +94,13 @@ class JsonAdaptedTransaction {
         switch (transactionType) {
         case "m":
             transaction = new MonthlyTransaction(modelDebtor, modelCreditor, amount, rate, description);
-                break;
+            break;
         case "y":
             transaction = new YearlyTransaction(modelDebtor, modelCreditor, amount, rate, description);
-                break;
+            break;
         default:
             transaction = new Transaction(modelDebtor, modelCreditor, amount, rate, description);
-                break;
+            break;
         }
 
         transaction.setSettled(settled);

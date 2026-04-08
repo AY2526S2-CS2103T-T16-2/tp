@@ -126,7 +126,7 @@ public class TransactionListPanel extends UiPart<Region> {
                 new ReadOnlyStringWrapper(otherPartyName(cellData.getValue())));
 
         amountColumn.setCellValueFactory(cellData ->
-                new ReadOnlyStringWrapper(amountText(cellData.getValue().getCurrAmount())));
+                new ReadOnlyStringWrapper(amountText(cellData.getValue().getOriginalAmount())));
 
         descriptionColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(descriptionText(cellData.getValue())));

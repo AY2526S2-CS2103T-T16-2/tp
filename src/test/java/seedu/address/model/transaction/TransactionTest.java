@@ -24,6 +24,27 @@ public class TransactionTest {
         return new PersonBuilder().withName("Creditor").build();
     }
 
+    private static class TestTransaction extends Transaction {
+
+        public TestTransaction(double amount, String description) {
+            super(debtor(), creditor(), amount, description);
+        }
+
+        @Override
+        public void updateTransactionAmount() {
+            // simple implementation for testing
+            currAmount += 10;
+        }
+    }
+
+    // ========== payTransaction ==========
+
+    @Test
+    public void payTransaction_reducesAmount() {
+        Transaction transaction = new TestTransaction(100, "test transaction");
+        transaction.payTransaction(20);
+        assertEquals(80, transaction.getCurrAmount(), 0.001);
+    }
     // ========== Constructor & Getters ==========
 
     @Test
@@ -89,6 +110,52 @@ public class TransactionTest {
     public void setCreditor_null_throwsNullPointerException() {
         Transaction transaction = new Transaction(debtor(), creditor(), 100, "test");
         assertThrows(NullPointerException.class, () -> transaction.setCreditor(null));
+    }
+
+    // ========== originalAmount ==========
+
+    @Test
+    public void getOriginalAmount_matchesInitialAmount() {
+        Transaction transaction = new TestTransaction(250.5, "desc");
+        assertEquals(250.5, transaction.getOriginalAmount(), 0.001);
+    }
+
+    @Test
+    public void getOriginalAmount_unchangedAfterPayment() {
+        Transaction transaction = new TestTransaction(100, "test transaction");
+        transaction.payTransaction(60);
+        assertEquals(100, transaction.getOriginalAmount(), 0.001);
+        assertEquals(40, transaction.getCurrAmount(), 0.001);
+    }
+
+    @Test
+    public void getOriginalAmount_unchangedAfterFullSettlement() {
+        Transaction transaction = new TestTransaction(100, "test transaction");
+        transaction.settleTransaction();
+        assertEquals(100, transaction.getOriginalAmount(), 0.001);
+        assertEquals(0, transaction.getCurrAmount(), 0.001);
+        assertTrue(transaction.isSettled());
+    }
+
+    @Test
+    public void setOriginalAmount_updatesStoredValue() {
+        Transaction transaction = new TestTransaction(100, "desc");
+        transaction.setOriginalAmount(999.9);
+        assertEquals(999.9, transaction.getOriginalAmount(), 0.001);
+    }
+
+    // ========== Getters ==========
+
+    @Test
+    public void getCurrAmount_returnsCorrectAmount() {
+        Transaction transaction = new TestTransaction(250.5, "desc");
+        assertEquals(250.5, transaction.getCurrAmount(), 0.001);
+    }
+
+    @Test
+    public void getDescription_returnsCorrectDescription() {
+        Transaction transaction = new TestTransaction(100, "my description");
+        assertEquals("my description", transaction.getDescription());
     }
 
     // ========== toString ==========

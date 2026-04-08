@@ -44,10 +44,48 @@ public class JsonAdaptedTransactionTest {
         Transaction restored = adapted.toModelType();
 
         assertEquals(original.getCurrAmount(), restored.getCurrAmount());
+        assertEquals(original.getOriginalAmount(), restored.getOriginalAmount());
         assertEquals(original.getDescription(), restored.getDescription());
         assertEquals(original.getDebtor(), restored.getDebtor());
         assertEquals(original.getCreditor(), restored.getCreditor());
         assertTrue(restored.isSettled());
+    }
+
+    @Test
+    public void roundTrip_settledTransaction_preservesOriginalAmount() throws IllegalValueException {
+        Person debtor = debtor();
+        Person creditor = creditor();
+        Transaction original = new Transaction(debtor, creditor, VALID_AMOUNT, VALID_RATE, VALID_DESCRIPTION);
+        original.settleTransaction(); // currAmount becomes 0, originalAmount stays VALID_AMOUNT
+
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction(original);
+        Transaction restored = adapted.toModelType();
+
+        assertEquals(0, restored.getCurrAmount(), 0.001);
+        assertEquals(VALID_AMOUNT, restored.getOriginalAmount(), 0.001);
+        assertTrue(restored.isSettled());
+    }
+
+    @Test
+    public void jsonCreator_nullOriginalAmount_fallsBackToCurrAmount() throws IllegalValueException {
+        // Simulates loading an old save file that has no originalAmount field
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction("", VALID_AMOUNT, null, VALID_RATE,
+                VALID_DESCRIPTION, new JsonAdaptedPerson(debtor()), new JsonAdaptedPerson(creditor()), false);
+        Transaction transaction = adapted.toModelType();
+        assertEquals(VALID_AMOUNT, transaction.getOriginalAmount(), 0.001);
+    }
+
+    @Test
+    public void jsonCreator_explicitOriginalAmount_restoresCorrectly() throws IllegalValueException {
+        double settledCurrAmount = 0.0;
+        double originalAmount = 500.0;
+        JsonAdaptedTransaction adapted = new JsonAdaptedTransaction("", settledCurrAmount, originalAmount,
+                VALID_RATE, VALID_DESCRIPTION, new JsonAdaptedPerson(debtor()), new JsonAdaptedPerson(creditor()),
+                true);
+        Transaction transaction = adapted.toModelType();
+        assertEquals(settledCurrAmount, transaction.getCurrAmount(), 0.001);
+        assertEquals(originalAmount, transaction.getOriginalAmount(), 0.001);
+        assertTrue(transaction.isSettled());
     }
 
     @Test
@@ -81,3 +119,4 @@ public class JsonAdaptedTransactionTest {
         assertFalse(transaction.isSettled());
     }
 }
+

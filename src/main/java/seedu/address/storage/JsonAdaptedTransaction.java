@@ -18,6 +18,7 @@ class JsonAdaptedTransaction {
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Transaction's %s field is missing!";
 
     private final double amount;
+    private final double originalAmount;
     private final String description;
     private final JsonAdaptedPerson debtor;
     private final JsonAdaptedPerson creditor;
@@ -27,12 +28,15 @@ class JsonAdaptedTransaction {
      * Constructs a {@code JsonAdaptedTransaction} with the given transaction details.
      */
     @JsonCreator
-    public JsonAdaptedTransaction(@JsonProperty("amount") double amount,
+    public JsonAdaptedTransaction(@JsonProperty("transactionType") String transactionType,
+                                  @JsonProperty("amount") double amount,
+                                  @JsonProperty("originalAmount") Double originalAmount,
                                   @JsonProperty("description") String description,
                                   @JsonProperty("debtor") JsonAdaptedPerson debtor,
                                   @JsonProperty("creditor") JsonAdaptedPerson creditor,
                                   @JsonProperty("settled") Boolean settled) {
         this.amount = amount;
+        this.originalAmount = (originalAmount != null) ? originalAmount : amount;
         this.description = description;
         this.debtor = debtor;
         this.creditor = creditor;
@@ -44,6 +48,7 @@ class JsonAdaptedTransaction {
      */
     public JsonAdaptedTransaction(Transaction source) {
         amount = source.getCurrAmount();
+        originalAmount = source.getOriginalAmount();
         description = source.getDescription();
         debtor = new JsonAdaptedPerson(source.getDebtor());
         creditor = new JsonAdaptedPerson(source.getCreditor());
@@ -72,6 +77,7 @@ class JsonAdaptedTransaction {
 
         Transaction transaction = new Transaction(modelDebtor, modelCreditor, amount, description);
         transaction.setSettled(settled);
+        transaction.setOriginalAmount(originalAmount);
         return transaction;
     }
 }

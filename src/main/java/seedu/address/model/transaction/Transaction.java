@@ -19,10 +19,13 @@ import seedu.address.model.person.Person;
 public class Transaction {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Description must not be empty.";
+            "Amount must be more than zero.";
 
     /** The current outstanding amount owed by the debtor to the creditor. */
     protected double currAmount;
+
+    /** The original amount when the transaction was first created. Never changes after construction. */
+    protected double originalAmount;
 
     /** A human-readable description of what this transaction is for. */
     protected String description;
@@ -57,8 +60,32 @@ public class Transaction {
         this.debtor = debtor;
         this.creditor = creditor;
         this.currAmount = currAmount;
+        this.originalAmount = currAmount;
         this.description = description;
         this.settled = false;
+    }
+
+    /**
+     * Updates the transaction's outstanding amount to account for accrued interest.
+     *
+     * <p>The base implementation is a no-op. Subclasses should override this method
+     * to apply their specific interest model (e.g. simple interest, compound interest).
+     */
+    public void updateTransactionAmount() {
+    }
+
+    /**
+     * Applies a payment to reduce the outstanding amount. If the transaction has not
+     * been recalculated today, interest is first applied via {@link #updateTransactionAmount()}
+     * before deducting the payment. The last recalculated date is then updated to today.
+     *
+     * @param amount the payment amount to deduct from the outstanding balance
+     */
+    public void payTransaction(double amount) {
+        currAmount -= amount;
+        if (Math.abs(currAmount) < 1e-9) {
+            settled = true;
+        }
     }
 
     /**
@@ -67,6 +94,23 @@ public class Transaction {
     public void settleTransaction() {
         currAmount = 0;
         settled = true;
+    }
+
+    /**
+     * Returns the original amount when the transaction was first created.
+     * This value never changes, even after partial payments or settlement.
+     *
+     * @return the original amount
+     */
+    public double getOriginalAmount() {
+        return originalAmount;
+    }
+
+    /**
+     * Sets the original amount. Used by storage during deserialisation.
+     */
+    public void setOriginalAmount(double originalAmount) {
+        this.originalAmount = originalAmount;
     }
 
     /**

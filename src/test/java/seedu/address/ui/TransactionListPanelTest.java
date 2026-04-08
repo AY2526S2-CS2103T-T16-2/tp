@@ -435,6 +435,21 @@ public class TransactionListPanelTest {
         assertNotNull(onFx(() -> dateColumn.getCellObservableValue(0)).getValue());
     }
 
+    @Test
+    public void amountColumn_settledTransaction_showsOriginalAmount() {
+        Person debtor = person(ALEX);
+        Person creditor = person(BERNICE);
+        Transaction settledTransaction = transaction(debtor, creditor, 75.0, "Settled debt");
+        settledTransaction.settleTransaction(); // currAmount → 0, originalAmount stays 75.0
+        Person displayedPerson = personWithTransactions(ALEX, settledTransaction);
+
+        TransactionListPanel panel = onFx(TransactionListPanel::new);
+        onFxRun(() -> panel.displayPerson(displayedPerson));
+
+        TableColumn<Transaction, String> amountColumn = getField(panel, "amountColumn");
+        assertEquals("$75.00", onFx(() -> amountColumn.getCellObservableValue(0)).getValue());
+    }
+
     private static void invokeUpdateItem(Object target, Class<?> parameterType, Object item, boolean empty) {
         try {
             Method method = target.getClass().getDeclaredMethod("updateItem", parameterType, boolean.class);

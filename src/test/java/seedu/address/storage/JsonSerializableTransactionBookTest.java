@@ -21,6 +21,7 @@ public class JsonSerializableTransactionBookTest {
         Person sourceCreditor = new PersonBuilder().withName("Bob Choo").build();
         Transaction transaction = new Transaction(sourceDebtor, sourceCreditor, 42.0, "Lunch");
         transaction.setSettled(true);
+
         sourceDebtor.appendTransaction(transaction);
         sourceCreditor.appendTransaction(transaction);
 
@@ -28,10 +29,12 @@ public class JsonSerializableTransactionBookTest {
         sourceBook.addPerson(sourceDebtor);
         sourceBook.addPerson(sourceCreditor);
 
-        JsonSerializableTransactionBook serializableBook = new JsonSerializableTransactionBook(sourceBook);
+        JsonSerializableTransactionBook serializableBook =
+                new JsonSerializableTransactionBook(sourceBook);
 
         Person liveDebtor = new PersonBuilder(sourceDebtor).withTransactions().build();
         Person liveCreditor = new PersonBuilder(sourceCreditor).withTransactions().build();
+
         AddressBook targetBook = new AddressBook();
         targetBook.addPerson(liveDebtor);
         targetBook.addPerson(liveCreditor);
@@ -39,7 +42,9 @@ public class JsonSerializableTransactionBookTest {
         serializableBook.loadInto(targetBook);
 
         assertEquals(1, liveDebtor.getTransactions().size());
+
         Transaction loaded = liveDebtor.getTransactions().iterator().next();
+
         assertSame(loaded, liveCreditor.getTransactions().iterator().next());
         assertSame(liveDebtor, loaded.getDebtor());
         assertSame(liveCreditor, loaded.getCreditor());
@@ -52,16 +57,18 @@ public class JsonSerializableTransactionBookTest {
     public void loadInto_missingMatchedPerson_skipsInvalidTransaction() {
         Person debtor = new PersonBuilder().withName("Alice Pauline").build();
         Person creditor = new PersonBuilder().withName("Bob Choo").build();
+
         JsonAdaptedTransaction adaptedTransaction = new JsonAdaptedTransaction(
-                10.0, "Lunch", new JsonAdaptedPerson(debtor), new JsonAdaptedPerson(creditor), false);
+                10.0, 0.0, "Lunch", new JsonAdaptedPerson(debtor), new JsonAdaptedPerson(creditor), false);
         JsonSerializableTransactionBook serializableBook =
-            new JsonSerializableTransactionBook(List.of(adaptedTransaction));
+                new JsonSerializableTransactionBook(List.of(adaptedTransaction));
 
         AddressBook targetBook = new AddressBook();
         Person liveDebtor = new PersonBuilder(debtor).build();
         targetBook.addPerson(liveDebtor);
 
         serializableBook.loadInto(targetBook);
+
         assertTrue(liveDebtor.getTransactions().isEmpty());
     }
 }

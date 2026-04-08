@@ -27,8 +27,8 @@ public class SettleUpCommandTest {
         Person b = model.getFilteredPersonList().get(1);
         Person c = model.getFilteredPersonList().get(2);
 
-        Transaction t1 = new Transaction(a, b, 10.0, 0.0, "a->b");
-        Transaction t2 = new Transaction(b, c, 6.0, 0.0, "b->c");
+        Transaction t1 = new Transaction(a, b, 10.0, "a->b");
+        Transaction t2 = new Transaction(b, c, 6.0, "b->c");
 
         a.appendTransaction(t1);
         b.appendTransaction(t1);
@@ -51,7 +51,7 @@ public class SettleUpCommandTest {
         Person b = model.getFilteredPersonList().get(1);
         Person c = model.getFilteredPersonList().get(2);
 
-        Transaction t1 = new Transaction(a, b, 10.0, 0.0, "a->b");
+        Transaction t1 = new Transaction(a, b, 10.0, "a->b");
         t1.settleTransaction();
         a.appendTransaction(t1);
         b.appendTransaction(t1);
@@ -70,8 +70,8 @@ public class SettleUpCommandTest {
         Person c = model.getFilteredPersonList().get(2);
         Person d = model.getFilteredPersonList().get(3);
 
-        Transaction t1 = new Transaction(a, b, 10.0, 0.0, "a->b");
-        Transaction t2 = new Transaction(a, d, 5.0, 0.0, "a->d");
+        Transaction t1 = new Transaction(a, b, 10.0, "a->b");
+        Transaction t2 = new Transaction(a, d, 5.0, "a->d");
 
         a.appendTransaction(t1);
         b.appendTransaction(t1);

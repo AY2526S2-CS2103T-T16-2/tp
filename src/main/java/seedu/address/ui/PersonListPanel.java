@@ -51,6 +51,20 @@ public class PersonListPanel extends UiPart<Region> {
     }
 
     /**
+     * Selects the given person in the list and scrolls to it.
+     * Does nothing if {@code person} is not in the list.
+     */
+    public void selectPerson(Person person) {
+        requireNonNull(person);
+        if (!personListView.getItems().contains(person)) {
+            logger.warning("Tried to select a person not in the list: " + person);
+            return;
+        }
+        personListView.getSelectionModel().select(person);
+        personListView.scrollTo(person);
+    }
+
+    /**
      * Forces all visible person list cells to re-render, refreshing displayed data such as balance labels.
      */
     public void refresh() {

@@ -14,9 +14,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.tag.Tag;
-import seedu.address.model.transaction.Amount;
 import seedu.address.model.transaction.TransactionDescriptor;
-import seedu.address.model.transaction.TransactionDescriptor.CompoundingType;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -25,16 +23,10 @@ public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
-    public static final String MESSAGE_INVALID_AMOUNT = Amount.MESSAGE_CONSTRAINTS;
-
-    public static final String MESSAGE_INVALID_RATE =
-            "Interest rate must be a number between 0 and 100.";
+    public static final String MESSAGE_INVALID_AMOUNT = "Amount must be a positive number.";
 
     public static final String MESSAGE_INVALID_DESCRIPTION =
             "Description cannot be empty.";
-
-    public static final String MESSAGE_INVALID_COMPOUNDING_TYPE =
-            "Compounding type must be 'm' (monthly), 'y' (yearly), or 'n' (none).";
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -137,94 +129,34 @@ public class ParserUtil {
     }
 
     /**
-     * Parses {@code String amount}, {@code String rate}, {@code String description},
-     * and {@code String compoundingType} into a {@code TransactionDescriptor}.
+     * Parses {@code String amount} and {@code String description} into a {@code TransactionDescriptor}.
      * Leading and trailing whitespaces will be trimmed.
-     *
-     * <p>The {@code compoundingType} field is optional — pass an empty string
-     * to default to {@code CompoundingType.NONE}.
-     * Accepted values: {@code "m"} (monthly), {@code "y"} (yearly), {@code ""} (none).
      *
      * @throws ParseException if any of the given fields are invalid.
      */
     public static TransactionDescriptor parseTransactionDescriptor(
-            String amount, String rate, String description, String compoundingType) throws ParseException {
+            String amount, String description) throws ParseException {
         requireNonNull(amount);
-        requireNonNull(rate);
         requireNonNull(description);
-        requireNonNull(compoundingType);
 
         double parsedAmount;
-        double parsedRate;
 
         String trimmedAmount = amount.trim();
-        if (!Amount.isValidAmount(trimmedAmount)) {
-            throw new ParseException(MESSAGE_INVALID_AMOUNT);
-        }
         try {
             parsedAmount = Double.parseDouble(trimmedAmount);
-        } catch (NumberFormatException e) {
-            throw new ParseException(MESSAGE_INVALID_AMOUNT);
-        }
-
-        try {
-            parsedRate = Double.parseDouble(rate.trim());
-            if (parsedRate < 0 || parsedRate > 100) {
-                throw new ParseException(MESSAGE_INVALID_RATE);
+            if (parsedAmount < 0.01) {
+                throw new ParseException(MESSAGE_INVALID_AMOUNT);
             }
         } catch (NumberFormatException e) {
-            throw new ParseException(MESSAGE_INVALID_RATE);
+            throw new ParseException(MESSAGE_INVALID_AMOUNT);
         }
 
         String trimmedDescription = description.trim();
-
-        CompoundingType parsedCompoundingType = parseCompoundingType(compoundingType);
-
-        return new TransactionDescriptor(parsedCompoundingType, parsedAmount, parsedRate, trimmedDescription);
-    }
-
-    /**
-     * Parses a {@code String compoundingType} into a {@code CompoundingType}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * <p>Accepted values (case-insensitive):
-     * <ul>
-     *   <li>{@code "m"} — monthly compounding</li>
-     *   <li>{@code "y"} — yearly compounding</li>
-     *   <li>{@code "n"} or {@code ""} — no compounding (default)</li>
-     * </ul>
-     *
-     * @param compoundingType the string to parse
-     * @return the corresponding {@code CompoundingType}
-     * @throws ParseException if {@code compoundingType} is not one of the accepted values
-     */
-    public static CompoundingType parseCompoundingType(String compoundingType) throws ParseException {
-        requireNonNull(compoundingType);
-        switch (compoundingType.trim().toLowerCase()) {
-        case "m":
-            return CompoundingType.MONTHLY;
-        case "y":
-            return CompoundingType.YEARLY;
-        case "n":
-        case "":
-            return CompoundingType.NONE;
-        default:
-            throw new ParseException(MESSAGE_INVALID_COMPOUNDING_TYPE);
+        if (trimmedDescription.isEmpty()) {
+            throw new ParseException(MESSAGE_INVALID_DESCRIPTION);
         }
+
+        return new TransactionDescriptor(parsedAmount, trimmedDescription);
     }
 
-    /**
-     * Parses a {@code String amount} into an {@code Amount}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code amount} is invalid.
-     */
-    public static Amount parseAmount(String amount) throws ParseException {
-        requireNonNull(amount);
-        String trimmedAmount = amount.trim();
-        if (!Amount.isValidAmount(trimmedAmount)) {
-            throw new ParseException(Amount.MESSAGE_CONSTRAINTS);
-        }
-        return new Amount(trimmedAmount);
-    }
 }

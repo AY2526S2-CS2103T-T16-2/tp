@@ -65,7 +65,7 @@ public class FindCommandTest {
                 .withAddress("123 Jurong West")
                 .withTags("friends")
                 .build();
-        alice.appendTransaction(new Transaction(alice, creditor, 50.00, 0, "Lunch money"));
+        alice.appendTransaction(new Transaction(alice, creditor, 50.00, "Lunch money"));
 
         benson = new PersonBuilder()
                 .withName("Benson Meier")
@@ -74,7 +74,7 @@ public class FindCommandTest {
                 .withAddress("311 Clementi Ave")
                 .withTags("owesMoney", "friends")
                 .build();
-        benson.appendTransaction(new Transaction(benson, creditor, 200.00, 0, "Rent split"));
+        benson.appendTransaction(new Transaction(benson, creditor, 200.00, "Rent split"));
 
         carl = new PersonBuilder()
                 .withName("Carl Kurz")

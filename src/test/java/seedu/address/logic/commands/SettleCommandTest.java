@@ -22,7 +22,6 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
-import seedu.address.model.transaction.MonthlyTransaction;
 import seedu.address.model.transaction.Transaction;
 import seedu.address.testutil.PersonBuilder;
 
@@ -38,8 +37,8 @@ public class SettleCommandTest {
         Person personToModify = model.getFilteredPersonList().get(0);
         Person otherPerson = model.getFilteredPersonList().get(1);
 
-        Transaction seedTransaction = new MonthlyTransaction(
-                personToModify, otherPerson, 25.0, 0.0, "Lunch");
+        Transaction seedTransaction = new Transaction(
+                personToModify, otherPerson, 25.0, "Lunch");
         personToModify.appendTransaction(seedTransaction);
         otherPerson.appendTransaction(seedTransaction);
 
@@ -77,7 +76,7 @@ public class SettleCommandTest {
     public void execute_invalidTransactionIndex_throwsCommandException() {
         Person personToModify = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person otherPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        Transaction seedTransaction = new MonthlyTransaction(personToModify, otherPerson, 10.0, 0.0, "seed");
+        Transaction seedTransaction = new Transaction(personToModify, otherPerson, 10.0, "seed");
         personToModify.appendTransaction(seedTransaction);
         otherPerson.appendTransaction(seedTransaction);
 
@@ -100,7 +99,7 @@ public class SettleCommandTest {
         Person personToModify = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person otherPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
 
-        Transaction seedTransaction = new MonthlyTransaction(personToModify, otherPerson, 10.0, 0.0, "seed");
+        Transaction seedTransaction = new Transaction(personToModify, otherPerson, 10.0, "seed");
         seedTransaction.settleTransaction();
         personToModify.appendTransaction(seedTransaction);
         otherPerson.appendTransaction(seedTransaction);
@@ -115,7 +114,7 @@ public class SettleCommandTest {
 
         Person personToModify = model.getFilteredPersonList().get(0);
         Person otherPerson = model.getAddressBook().getPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        Transaction seedTransaction = new MonthlyTransaction(personToModify, otherPerson, 20.0, 0.0, "Filtered");
+        Transaction seedTransaction = new Transaction(personToModify, otherPerson, 20.0, "Filtered");
         personToModify.appendTransaction(seedTransaction);
         otherPerson.appendTransaction(seedTransaction);
 
@@ -144,8 +143,8 @@ public class SettleCommandTest {
                 .withAddress(liveOther.getAddress().value)
                 .build();
 
-        Transaction storageLikeTransaction = new MonthlyTransaction(
-                detachedDebtor, detachedCreditor, 40.0, 0.0, "Detached");
+        Transaction storageLikeTransaction = new Transaction(
+                detachedDebtor, detachedCreditor, 40.0, "Detached");
         livePerson.appendTransaction(storageLikeTransaction);
         liveOther.appendTransaction(storageLikeTransaction);
 

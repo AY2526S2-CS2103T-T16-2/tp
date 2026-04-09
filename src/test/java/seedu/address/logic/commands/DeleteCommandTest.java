@@ -23,7 +23,6 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
-import seedu.address.model.transaction.MonthlyTransaction;
 import seedu.address.model.transaction.Transaction;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -90,7 +89,7 @@ public class DeleteCommandTest {
         Person personToDelete = model.getFilteredPersonList().get(0);
         Person otherPerson = model.getFilteredPersonList().get(1);
 
-        Transaction transaction = new MonthlyTransaction(personToDelete, otherPerson, 10.0, 0.0, "seed");
+        Transaction transaction = new Transaction(personToDelete, otherPerson, 10.0, "seed");
         personToDelete.appendTransaction(transaction);
         otherPerson.appendTransaction(transaction);
 
@@ -124,8 +123,8 @@ public class DeleteCommandTest {
         Person otherPerson = model.getFilteredPersonList().get(1);
 
         // Seed a transaction between them
-        Transaction seedTransaction = new MonthlyTransaction(
-                personToModify, otherPerson, 10.0, 0.0, "Test Transaction");
+        Transaction seedTransaction = new Transaction(
+                personToModify, otherPerson, 10.0, "Test Transaction");
         personToModify.appendTransaction(seedTransaction);
         otherPerson.appendTransaction(seedTransaction);
 
@@ -181,7 +180,7 @@ public class DeleteCommandTest {
     public void execute_invalidTransactionIndex_throwsCommandException() {
         Person personToModify = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person otherPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        Transaction seedTransaction = new MonthlyTransaction(personToModify, otherPerson, 10.0, 0.0, "seed");
+        Transaction seedTransaction = new Transaction(personToModify, otherPerson, 10.0, "seed");
         personToModify.appendTransaction(seedTransaction);
         otherPerson.appendTransaction(seedTransaction);
 

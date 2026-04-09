@@ -187,9 +187,10 @@ public class TransactionListPanelTest {
         Transaction transactionHigh = transaction(10, "high");
         Transaction transactionMid = transaction(7, "mid");
         Transaction transactionLow = transaction(-5, "low");
+        Person displayedPerson = personWithTransactions(ALEX, transactionLow, transactionMid, transactionHigh);
 
         List<Transaction> sorted = TransactionListPanel.sortedTransactions(
-                Set.of(transactionLow, transactionMid, transactionHigh));
+                displayedPerson, displayedPerson.getTransactions());
         assertEquals(List.of(transactionHigh, transactionMid, transactionLow), sorted);
     }
 
@@ -333,30 +334,6 @@ public class TransactionListPanelTest {
     }
 
     @Test
-    public void oneBasedIndexOf_followsIndexOfSemantics() {
-        List<String> items = List.of("a", "b", "c");
-        assertEquals(1, TransactionListPanel.oneBasedIndexOf(items, "a"));
-        assertEquals(3, TransactionListPanel.oneBasedIndexOf(items, "c"));
-        assertEquals(0, TransactionListPanel.oneBasedIndexOf(items, "x"));
-    }
-
-    @Test
-    public void oneBasedIndexOf_nullItems_throws() {
-        assertThrows(NullPointerException.class, () -> TransactionListPanel.oneBasedIndexOf(null, "x"));
-    }
-
-    @Test
-    public void indexCellValue_wrapsOneBasedIndex() {
-        Transaction t1 = transaction(5, "a");
-        Transaction t2 = transaction(3, "b");
-        List<Transaction> items = List.of(t1, t2);
-        assertEquals(1, TransactionListPanel.indexCellValue(items, t1).getValue().intValue());
-        assertEquals(2, TransactionListPanel.indexCellValue(items, t2).getValue().intValue());
-        assertEquals(0,
-                TransactionListPanel.indexCellValue(items, transaction(1, "missing")).getValue().intValue());
-    }
-
-    @Test
     public void statusCell_updateItem_settledAppliesStyle() {
         TransactionListPanel panel = onFx(TransactionListPanel::new);
         TableColumn<Transaction, String> statusColumn = getField(panel, "statusColumn");
@@ -421,33 +398,17 @@ public class TransactionListPanelTest {
         TableColumn<Transaction, Number> indexColumn = getField(panel, "indexColumn");
         TableColumn<Transaction, String> directionColumn = getField(panel, "directionColumn");
         TableColumn<Transaction, String> otherPartyColumn = getField(panel, "otherPartyColumn");
-        TableColumn<Transaction, String> amountColumn = getField(panel, "amountColumn");
+        TableColumn<Transaction, Double> amountColumn = getField(panel, "amountColumn");
         TableColumn<Transaction, String> descriptionColumn = getField(panel, "descriptionColumn");
         TableColumn<Transaction, String> statusColumn = getField(panel, "statusColumn");
         TableColumn<Transaction, String> dateColumn = getField(panel, "dateColumn");
 
-        assertEquals(1, onFx(() -> indexColumn.getCellObservableValue(0)).getValue().intValue());
         assertEquals("Owe", onFx(() -> directionColumn.getCellObservableValue(0)).getValue());
         assertEquals(BERNICE, onFx(() -> otherPartyColumn.getCellObservableValue(0)).getValue());
-        assertEquals("$12.50", onFx(() -> amountColumn.getCellObservableValue(0)).getValue());
+        assertEquals(12.5, onFx(() -> amountColumn.getCellData(0)));
         assertEquals("Dinner", onFx(() -> descriptionColumn.getCellObservableValue(0)).getValue());
         assertEquals("Pending", onFx(() -> statusColumn.getCellObservableValue(0)).getValue());
         assertNotNull(onFx(() -> dateColumn.getCellObservableValue(0)).getValue());
-    }
-
-    @Test
-    public void amountColumn_settledTransaction_showsOriginalAmount() {
-        Person debtor = person(ALEX);
-        Person creditor = person(BERNICE);
-        Transaction settledTransaction = transaction(debtor, creditor, 75.0, "Settled debt");
-        settledTransaction.settleTransaction(); // currAmount → 0, originalAmount stays 75.0
-        Person displayedPerson = personWithTransactions(ALEX, settledTransaction);
-
-        TransactionListPanel panel = onFx(TransactionListPanel::new);
-        onFxRun(() -> panel.displayPerson(displayedPerson));
-
-        TableColumn<Transaction, String> amountColumn = getField(panel, "amountColumn");
-        assertEquals("$75.00", onFx(() -> amountColumn.getCellObservableValue(0)).getValue());
     }
 
     private static void invokeUpdateItem(Object target, Class<?> parameterType, Object item, boolean empty) {

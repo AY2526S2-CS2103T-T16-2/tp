@@ -165,6 +165,7 @@ public class MainWindow extends UiPart<Stage> {
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
 
         transactionListPanel = new TransactionListPanel();
+        transactionListPanel.setSortChangeListener(logic::setTransactionSortState);
         transactionListPanelPlaceholder.getChildren().add(transactionListPanel.getRoot());
         personListPanel.setSelectionListener(transactionListPanel::displayPerson);
 

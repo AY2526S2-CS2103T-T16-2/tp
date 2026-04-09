@@ -23,6 +23,8 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.model.transaction.Transaction;
+import seedu.address.model.transaction.TransactionComparators;
+import seedu.address.model.transaction.TransactionSortState;
 import seedu.address.testutil.PersonBuilder;
 
 /**
@@ -48,8 +50,9 @@ public class SettleCommandTest {
         SettleCommand settleCommand = new SettleCommand(personIndex, transactionIndex);
         CommandResult result = settleCommand.execute(model);
 
+        TransactionSortState defaultState = TransactionSortState.defaultState();
         List<Transaction> transactions = model.getFilteredPersonList().get(0).getTransactions().stream()
-                .sorted(Comparator.comparingDouble(Transaction::getCurrAmount).reversed())
+                .sorted(TransactionComparators.comparatorFor(defaultState, personToModify))
                 .collect(Collectors.toList());
 
         Transaction settledTransaction = transactions.get(0);

@@ -2,9 +2,10 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import seedu.address.model.transaction.TransactionComparators;
+import seedu.address.model.transaction.TransactionSortState;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -57,12 +58,13 @@ public class SettleCommand extends Command {
         }
 
         Person personToModify = lastShownList.get(targetIndex.getZeroBased());
-        return settleTransaction(personToModify);
+        return settleTransaction(personToModify, model);
     }
 
-    private CommandResult settleTransaction(Person person) throws CommandException {
+    private CommandResult settleTransaction(Person person, Model model) throws CommandException {
+        TransactionSortState sortState = model.getTransactionSortState();
         List<Transaction> transactions = person.getTransactions().stream()
-                .sorted(Comparator.comparingDouble(Transaction::getCurrAmount).reversed())
+                .sorted(TransactionComparators.comparatorFor(sortState, person))
                 .collect(Collectors.toList());
 
         if (transactions.isEmpty()) {

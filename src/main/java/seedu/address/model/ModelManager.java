@@ -12,6 +12,7 @@ import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
+import seedu.address.model.transaction.TransactionSortState;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -22,6 +23,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private TransactionSortState transactionSortState = TransactionSortState.defaultState();
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -129,6 +131,17 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public TransactionSortState getTransactionSortState() {
+        return transactionSortState;
+    }
+
+    @Override
+    public void setTransactionSortState(TransactionSortState transactionSortState) {
+        requireNonNull(transactionSortState);
+        this.transactionSortState = transactionSortState;
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;
@@ -142,7 +155,8 @@ public class ModelManager implements Model {
         ModelManager otherModelManager = (ModelManager) other;
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons);
+                && filteredPersons.equals(otherModelManager.filteredPersons)
+                && transactionSortState.equals(otherModelManager.transactionSortState);
     }
 
 }

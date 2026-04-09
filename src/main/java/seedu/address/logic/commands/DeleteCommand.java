@@ -16,6 +16,8 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 import seedu.address.model.transaction.Transaction;
+import seedu.address.model.transaction.TransactionComparators;
+import seedu.address.model.transaction.TransactionSortState;
 import seedu.address.model.util.SampleDataUtil;
 
 /**
@@ -138,8 +140,9 @@ public class DeleteCommand extends Command {
      */
     private CommandResult deleteTransaction(Model model, Person person) throws CommandException {
 
+        TransactionSortState sortState = model.getTransactionSortState();
         List<Transaction> transactions = person.getTransactions().stream()
-                .sorted(Comparator.comparingDouble(Transaction::getCurrAmount).reversed())
+                .sorted(TransactionComparators.comparatorFor(sortState, person))
                 .collect(Collectors.toList());
 
         if (transactions.isEmpty()) {

@@ -24,6 +24,8 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.model.transaction.Transaction;
+import seedu.address.model.transaction.TransactionComparators;
+import seedu.address.model.transaction.TransactionSortState;
 import seedu.address.model.util.SampleDataUtil;
 
 /**
@@ -133,8 +135,9 @@ public class DeleteCommandTest {
         Index transactionIndex = Index.fromZeroBased(0);
 
         // Sort transactions the same way DeleteCommand does
+        TransactionSortState defaultState = TransactionSortState.defaultState();
         List<Transaction> transactions = personToModify.getTransactions().stream()
-                .sorted(Comparator.comparingDouble(Transaction::getCurrAmount).reversed())
+                .sorted(TransactionComparators.comparatorFor(defaultState, personToModify))
                 .collect(Collectors.toList());
 
         Transaction transactionToDelete = transactions.get(transactionIndex.getZeroBased());

@@ -367,8 +367,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1.  User requests to list persons.
 2.  IOU displays the list of persons.
-3.  User requests to record a debt using the person index.
-4.  IOU records the debt under the selected person.
+3.  User requests to record a debt using the person index, amount, and description.
+4.  IOU records the debt under the selected person with the given amount and description.
 5.  IOU updates the outstanding balance.
 
     Use case ends.
@@ -397,7 +397,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 3. User requests to view a particular person.
 4. IOU shows the view of the person to the user.
 5. User views a person's transaction list.
-6. User requests to settle a transaction.
+6. User requests to settle a transaction using a transaction index.
 7. IOU records the transaction's current outstanding amount before settling.
 8. IOU marks the transaction as settled and sets its outstanding balance to $0.00.
 9. IOU displays a success message showing the original amount that was settled, the description, and the parties involved.
@@ -407,9 +407,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 Extensions
 
-* 1a. Transaction index invalid.
+* 6a. Transaction index invalid.
 
-    * 1a1. IOU displays error message.
+    * 6a1. IOU displays error message.
 
     Use case ends.
 
@@ -498,7 +498,7 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: List all persons using the `list` command. Multiple persons (at least 2) in the list.
 
     1. Test case: `addtxn 1 2 a/50 d/dinner`<br>
-       Expected: A transaction is added from person 1 to person 2 for an amount of 50 with no interest and no compounding type. Details of the added transaction shown in the status message. Timestamp in the status bar is updated.
+       Expected: A transaction is added from person 1 to person 2 for an amount of 50 with description "dinner". Details of the added transaction shown in the status message. Timestamp in the status bar is updated.
 
     1. Test case: `addtxn 1 2 a/50`<br>
        Expected: No transaction is added. Error details shown in the status message indicating that the description cannot be empty. Status bar remains the same.

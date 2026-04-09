@@ -44,7 +44,7 @@ public class PersonMatchesFilterPredicateTest {
                 .withName("Alice Pauline")
                 .withTags("friends")
                 .build();
-        Transaction lunchTransaction = new Transaction(alice, creditor, 50.00, 0, "Lunch money");
+        Transaction lunchTransaction = new Transaction(alice, creditor, 50.00, "Lunch money");
         alice.appendTransaction(lunchTransaction);
     }
 
@@ -189,8 +189,8 @@ public class PersonMatchesFilterPredicateTest {
     public void test_personWithMultipleTransactions_matchesIfAnyTransactionWithinRange() {
         Person bob = new PersonBuilder().withName("Bob Martin").build();
         Person carol = new PersonBuilder().withName("Carol Diaz").build();
-        bob.appendTransaction(new Transaction(bob, carol, 20.00, 0, "Coffee"));
-        bob.appendTransaction(new Transaction(bob, carol, 80.00, 0, "Dinner"));
+        bob.appendTransaction(new Transaction(bob, carol, 20.00, "Coffee"));
+        bob.appendTransaction(new Transaction(bob, carol, 80.00, "Dinner"));
 
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.of(50.00), Optional.of(100.00), Optional.empty());

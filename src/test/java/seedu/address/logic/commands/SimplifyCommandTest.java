@@ -76,7 +76,9 @@ public class SimplifyCommandTest {
                 Index.fromOneBased(2),
                 Index.fromOneBased(model.getFilteredPersonList().size() + 1)));
 
-        assertCommandFailure(command, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        assertCommandFailure(command, model,
+                String.format(SimplifyCommand.MESSAGE_INVALID_PERSON_INDEX,
+                        model.getFilteredPersonList().size() + 1));
     }
 
     @Test

@@ -22,8 +22,10 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.transaction.SortDirection;
 import seedu.address.model.transaction.Transaction;
 import seedu.address.model.transaction.TransactionComparators;
+import seedu.address.model.transaction.TransactionSortKey;
 import seedu.address.model.transaction.TransactionSortState;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -174,6 +176,46 @@ public class DeleteCommandTest {
         Person updatedPerson = model.getFilteredPersonList().get(0);
         Person updatedOtherPerson = model.getFilteredPersonList().get(1);
 
+        assertFalse(updatedPerson.getTransactions().contains(transactionToDelete));
+        assertFalse(updatedOtherPerson.getTransactions().contains(transactionToDelete));
+    }
+
+    @Test
+    public void execute_respectsDisplayedTransactionSortState() throws Exception {
+        Person personToModify = model.getFilteredPersonList().get(0);
+        Person otherPerson = model.getFilteredPersonList().get(1);
+        Person thirdPerson = model.getFilteredPersonList().get(2);
+
+        Transaction amountFirst = new Transaction(personToModify, otherPerson, 10.0, "Zulu");
+        Transaction descriptionFirst = new Transaction(personToModify, thirdPerson, 5.0, "Alpha");
+
+        personToModify.appendTransaction(amountFirst);
+        otherPerson.appendTransaction(amountFirst);
+        personToModify.appendTransaction(descriptionFirst);
+        thirdPerson.appendTransaction(descriptionFirst);
+
+        TransactionSortState sortState =
+                new TransactionSortState(TransactionSortKey.DESCRIPTION, SortDirection.ASCENDING);
+        model.setTransactionSortState(sortState);
+
+        List<Transaction> transactions = personToModify.getTransactions().stream()
+                .sorted(TransactionComparators.comparatorFor(sortState, personToModify))
+                .collect(Collectors.toList());
+        Transaction transactionToDelete = transactions.get(0);
+
+        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON, Index.fromOneBased(1));
+        CommandResult commandResult = deleteCommand.execute(model);
+
+        assertEquals(String.format(DeleteCommand.MESSAGE_DELETE_TRANSACTION_SUCCESS,
+                1, String.format("$%.2f | %s | %s → %s",
+                        transactionToDelete.getCurrAmount(),
+                        transactionToDelete.getDescription(),
+                        transactionToDelete.getDebtor().getName(),
+                        transactionToDelete.getCreditor().getName())),
+                commandResult.getFeedbackToUser());
+
+        Person updatedPerson = model.getFilteredPersonList().get(0);
+        Person updatedOtherPerson = model.getFilteredPersonList().get(2);
         assertFalse(updatedPerson.getTransactions().contains(transactionToDelete));
         assertFalse(updatedOtherPerson.getTransactions().contains(transactionToDelete));
     }

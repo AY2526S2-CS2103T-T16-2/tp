@@ -415,6 +415,23 @@ public class TransactionListPanelTest {
     }
 
     @Test
+    public void indexColumn_updatesWhenRowIndexChanges() {
+        TransactionListPanel panel = onFx(TransactionListPanel::new);
+        TableColumn<Transaction, Number> indexColumn = getField(panel, "indexColumn");
+        javafx.scene.control.TableCell<Transaction, Number> cell =
+                onFx(() -> indexColumn.getCellFactory().call(indexColumn));
+
+        onFxRun(() -> invokeUpdateIndex(cell, 0));
+        assertEquals("1", onFx(cell::getText));
+
+        onFxRun(() -> invokeUpdateIndex(cell, 3));
+        assertEquals("4", onFx(cell::getText));
+
+        onFxRun(() -> invokeUpdateIndex(cell, -1));
+        assertNull(onFx(cell::getText));
+    }
+
+    @Test
     public void setSortChangeListener_notifiesInitialStateAndUpdatesWhenSortOrderChanges() {
         Person debtor = person(ALEX);
         Person creditor = person(BERNICE);
@@ -472,11 +489,59 @@ public class TransactionListPanelTest {
         assertEquals(expectedState, actualState);
     }
 
+    @Test
+    public void getCurrentSortState_mapsAllSortableColumns() {
+        TransactionListPanel panel = onFx(TransactionListPanel::new);
+        Person displayedPerson = personWithTransactions(
+                ALEX,
+                transaction(person(ALEX), person(BERNICE), 10, "Apple"),
+                transaction(person(BERNICE), person(ALEX), 20, "Banana"));
+
+        onFxRun(() -> panel.displayPerson(displayedPerson));
+
+        TableView<Transaction> transactionTable = getField(panel, "transactionTable");
+
+        Object[][] sortableColumns = {
+            {"directionColumn", TransactionSortKey.DIRECTION},
+            {"otherPartyColumn", TransactionSortKey.OTHER_PARTY},
+            {"amountColumn", TransactionSortKey.AMOUNT},
+            {"descriptionColumn", TransactionSortKey.DESCRIPTION},
+            {"statusColumn", TransactionSortKey.STATUS},
+            {"dateColumn", TransactionSortKey.DATE}
+        };
+
+        for (Object[] sortableColumn : sortableColumns) {
+            String fieldName = (String) sortableColumn[0];
+            TransactionSortKey expectedKey = (TransactionSortKey) sortableColumn[1];
+            TableColumn<Transaction, ?> column = getField(panel, fieldName);
+
+            onFxRun(() -> {
+                column.setSortType(TableColumn.SortType.ASCENDING);
+                transactionTable.getSortOrder().setAll(column);
+                transactionTable.sort();
+            });
+
+            TransactionSortState expectedState =
+                    new TransactionSortState(expectedKey, SortDirection.ASCENDING);
+            assertEquals(expectedState, onFx(panel::getCurrentSortState));
+        }
+    }
+
     private static void invokeUpdateItem(Object target, Class<?> parameterType, Object item, boolean empty) {
         try {
             Method method = target.getClass().getDeclaredMethod("updateItem", parameterType, boolean.class);
             method.setAccessible(true);
             method.invoke(target, item, empty);
+        } catch (ReflectiveOperationException exception) {
+            throw new AssertionError(exception);
+        }
+    }
+
+    private static void invokeUpdateIndex(Object target, int index) {
+        try {
+            Method method = target.getClass().getDeclaredMethod("updateIndex", int.class);
+            method.setAccessible(true);
+            method.invoke(target, index);
         } catch (ReflectiveOperationException exception) {
             throw new AssertionError(exception);
         }

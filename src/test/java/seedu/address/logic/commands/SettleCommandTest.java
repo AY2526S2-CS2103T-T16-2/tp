@@ -21,8 +21,10 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.transaction.SortDirection;
 import seedu.address.model.transaction.Transaction;
 import seedu.address.model.transaction.TransactionComparators;
+import seedu.address.model.transaction.TransactionSortKey;
 import seedu.address.model.transaction.TransactionSortState;
 import seedu.address.testutil.PersonBuilder;
 
@@ -61,6 +63,40 @@ public class SettleCommandTest {
         assertTrue(result.getPersonIndexToRefresh().isPresent());
         assertEquals(personIndex.getOneBased(), result.getPersonIndexToRefresh().getAsInt());
         assertEquals("Settled Transaction #1: $25.00 | Lunch | "
+                        + settledTransaction.getDebtor().getName() + " -> "
+                        + settledTransaction.getCreditor().getName(),
+                result.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_respectsDisplayedTransactionSortState() throws Exception {
+        Person personToModify = model.getFilteredPersonList().get(0);
+        Person otherPerson = model.getFilteredPersonList().get(1);
+        Person thirdPerson = model.getFilteredPersonList().get(2);
+
+        Transaction amountFirst = new Transaction(personToModify, otherPerson, 10.0, "Zulu");
+        Transaction descriptionFirst = new Transaction(personToModify, thirdPerson, 5.0, "Alpha");
+
+        personToModify.appendTransaction(amountFirst);
+        otherPerson.appendTransaction(amountFirst);
+        personToModify.appendTransaction(descriptionFirst);
+        thirdPerson.appendTransaction(descriptionFirst);
+
+        TransactionSortState sortState =
+                new TransactionSortState(TransactionSortKey.DESCRIPTION, SortDirection.ASCENDING);
+        model.setTransactionSortState(sortState);
+
+        List<Transaction> transactions = model.getFilteredPersonList().get(0).getTransactions().stream()
+                .sorted(TransactionComparators.comparatorFor(sortState, personToModify))
+                .collect(Collectors.toList());
+        Transaction settledTransaction = transactions.get(0);
+
+        SettleCommand settleCommand = new SettleCommand(INDEX_FIRST_PERSON, Index.fromOneBased(1));
+        CommandResult result = settleCommand.execute(model);
+
+        assertEquals(0.0, settledTransaction.getCurrAmount());
+        assertTrue(settledTransaction.isSettled());
+        assertEquals("Settled Transaction #1: $5.00 | Alpha | "
                         + settledTransaction.getDebtor().getName() + " -> "
                         + settledTransaction.getCreditor().getName(),
                 result.getFeedbackToUser());

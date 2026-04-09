@@ -128,15 +128,23 @@ public class TransactionListPanel extends UiPart<Region> {
         indexColumn.setSortable(false);
         indexColumn.setCellFactory(col -> new TableCell<>() {
             @Override
+            public void updateIndex(int index) {
+                super.updateIndex(index);
+                updateIndexText(index);
+            }
+
+            @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
-
                 if (empty) {
                     setText(null);
                     return;
                 }
+                updateIndexText(getIndex());
+            }
 
-                setText(Integer.toString(getIndex() + 1));
+            private void updateIndexText(int index) {
+                setText(index < 0 ? null : Integer.toString(index + 1));
             }
         });
 
@@ -144,10 +152,12 @@ public class TransactionListPanel extends UiPart<Region> {
                 new ReadOnlyStringWrapper(directionText(cellData.getValue())));
         directionColumn.setCellFactory(col -> new DirectionCell());
         directionColumn.setComparator(String.CASE_INSENSITIVE_ORDER);
+        observeSortType(directionColumn);
 
         otherPartyColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(otherPartyName(cellData.getValue())));
         otherPartyColumn.setComparator(String.CASE_INSENSITIVE_ORDER);
+        observeSortType(otherPartyColumn);
 
         amountColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(Math.abs(cellData.getValue().getCurrAmount())));
@@ -166,19 +176,23 @@ public class TransactionListPanel extends UiPart<Region> {
             }
         });
         amountColumn.setComparator(Comparator.nullsLast(Comparator.naturalOrder()));
+        observeSortType(amountColumn);
 
         descriptionColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(descriptionText(cellData.getValue())));
         descriptionColumn.setComparator(String.CASE_INSENSITIVE_ORDER);
+        observeSortType(descriptionColumn);
 
         statusColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(statusText(cellData.getValue())));
         statusColumn.setCellFactory(col -> new StatusCell());
         statusColumn.setComparator(String.CASE_INSENSITIVE_ORDER);
+        observeSortType(statusColumn);
 
         dateColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(dateText(cellData.getValue())));
         dateColumn.setComparator(String.CASE_INSENSITIVE_ORDER);
+        observeSortType(dateColumn);
 
         amountColumn.setSortType(TableColumn.SortType.DESCENDING);
         transactionTable.getSortOrder().setAll(amountColumn);
@@ -268,6 +282,10 @@ public class TransactionListPanel extends UiPart<Region> {
             return TransactionSortKey.DATE;
         }
         return TransactionSortKey.AMOUNT;
+    }
+
+    private void observeSortType(TableColumn<Transaction, ?> column) {
+        column.sortTypeProperty().addListener((observable, oldValue, newValue) -> notifySortStateChanged());
     }
 
     /**

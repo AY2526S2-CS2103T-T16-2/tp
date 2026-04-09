@@ -3,9 +3,31 @@
 
 # IOU – Simple Debt Tracking for Friends and Colleagues
 
-IOU is a desktop application designed to help users track small debts and loans among friends, colleagues, or roommates. It allows users to quickly record who owes whom, how much money is involved, and whether the transaction has been settled. The application is optimized for users who prefer typing commands to perform actions quickly while still benefiting from a graphical user interface to view their records.
+# About IOU
 
-This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org), which provides a robust command-based interface and persistent storage system. IOU adapts this structure to support financial tracking between individuals.
+## What is IOU?
+IOU is a desktop application designed to help you keep track of small debts and loans between friends, colleagues, or roommates. Prefer typing over clicking? You’ll feel right at home here. Commands let you work fast, while the interface keeps everything visible and organized.
+
+By using simple text commands instead of spreadsheets or mobile apps, IOU allows users to log financial transactions directly from their laptops in seconds. It’s ideal for staying on top of peer-to-peer debts during workdays, social events, or shared living situations.
+
+## Why is this app needed?
+Managing multiple small debts can be tedious and error-prone, especially when relying on spreadsheets or phone apps. These tools can be slow, disruptive, or hard to reference quickly.
+
+IOU provides a keyboard-friendly, streamlined solution that lets users record, check, and update financial records instantly—saving time, reducing mistakes, and keeping your personal finances organized.
+
+## Who are the target users?
+IOU is especially suited for people who:
+* Spend most of their day on a laptop or desktop
+* Handle multiple informal loans or shared expenses
+* Prefer typing commands over navigating menus or clicking buttons
+* Want fast, clear, and organized access to personal finance records
+
+## What value does IOU provide?
+With IOU, users can:
+* Quickly record new debts and loans
+* Track outstanding balances at a glance
+* Keep financial records accurate and up-to-date
+* Replace cluttered spreadsheets with a smooth, efficient workflow
 
 ---
 

@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +25,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import seedu.address.model.person.Person;
+import seedu.address.model.transaction.SortDirection;
 import seedu.address.model.transaction.Transaction;
+import seedu.address.model.transaction.TransactionSortKey;
+import seedu.address.model.transaction.TransactionSortState;
 import seedu.address.testutil.PersonBuilder;
 
 public class TransactionListPanelTest {
@@ -408,6 +412,64 @@ public class TransactionListPanelTest {
         assertEquals("Dinner", onFx(() -> descriptionColumn.getCellObservableValue(0)).getValue());
         assertEquals("Pending", onFx(() -> statusColumn.getCellObservableValue(0)).getValue());
         assertNotNull(onFx(() -> dateColumn.getCellObservableValue(0)).getValue());
+    }
+
+    @Test
+    public void setSortChangeListener_notifiesInitialStateAndUpdatesWhenSortOrderChanges() {
+        Person debtor = person(ALEX);
+        Person creditor = person(BERNICE);
+        Transaction transaction = transaction(debtor, creditor, 12.5, "Dinner");
+        Person displayedPerson = personWithTransactions(ALEX, transaction);
+
+        TransactionListPanel panel = onFx(TransactionListPanel::new);
+        onFxRun(() -> panel.displayPerson(displayedPerson));
+
+        List<TransactionSortState> notifications = new ArrayList<>();
+        onFxRun(() -> panel.setSortChangeListener(notifications::add));
+
+        List<TransactionSortState> initialStates = onFx(() -> new ArrayList<>(notifications));
+        assertEquals(List.of(TransactionSortState.defaultState()), initialStates);
+
+        TableView<Transaction> transactionTable = getField(panel, "transactionTable");
+        TableColumn<Transaction, String> directionColumn = getField(panel, "directionColumn");
+
+        onFxRun(() -> {
+            directionColumn.setSortType(TableColumn.SortType.ASCENDING);
+            transactionTable.getSortOrder().setAll(directionColumn);
+            transactionTable.sort();
+        });
+
+        TransactionSortState expectedState =
+                new TransactionSortState(TransactionSortKey.DIRECTION, SortDirection.ASCENDING);
+        List<TransactionSortState> statesAfterSort =
+                onFx(() -> new ArrayList<>(notifications));
+        assertEquals(2, statesAfterSort.size());
+        assertEquals(expectedState, statesAfterSort.get(1));
+    }
+
+    @Test
+    public void getCurrentSortState_updatesWhenPrimarySortColumnChanges() {
+        TransactionListPanel panel = onFx(TransactionListPanel::new);
+        Person displayedPerson = personWithTransactions(
+                ALEX,
+                transaction(person(ALEX), person(BERNICE), 10, "Apple"),
+                transaction(person(ALEX), person(BERNICE), 20, "Banana"));
+
+        onFxRun(() -> panel.displayPerson(displayedPerson));
+
+        TableView<Transaction> transactionTable = getField(panel, "transactionTable");
+        TableColumn<Transaction, String> descriptionColumn = getField(panel, "descriptionColumn");
+
+        onFxRun(() -> {
+            descriptionColumn.setSortType(TableColumn.SortType.ASCENDING);
+            transactionTable.getSortOrder().setAll(descriptionColumn);
+            transactionTable.sort();
+        });
+
+        TransactionSortState expectedState =
+                new TransactionSortState(TransactionSortKey.DESCRIPTION, SortDirection.ASCENDING);
+        TransactionSortState actualState = onFx(panel::getCurrentSortState);
+        assertEquals(expectedState, actualState);
     }
 
     private static void invokeUpdateItem(Object target, Class<?> parameterType, Object item, boolean empty) {

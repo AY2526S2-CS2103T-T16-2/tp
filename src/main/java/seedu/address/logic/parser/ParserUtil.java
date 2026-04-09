@@ -23,7 +23,7 @@ public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
-    public static final String MESSAGE_INVALID_AMOUNT = Amount.MESSAGE_CONSTRAINTS;
+    public static final String MESSAGE_INVALID_AMOUNT = "Amount must be a positive number.";
 
     public static final String MESSAGE_INVALID_DESCRIPTION =
             "Description cannot be empty.";
@@ -142,11 +142,11 @@ public class ParserUtil {
         double parsedAmount;
 
         String trimmedAmount = amount.trim();
-        if (!Amount.isValidAmount(trimmedAmount)) {
-            throw new ParseException(MESSAGE_INVALID_AMOUNT);
-        }
         try {
             parsedAmount = Double.parseDouble(trimmedAmount);
+            if (parsedAmount < 0.01) {
+                throw new ParseException(MESSAGE_INVALID_AMOUNT);
+            }
         } catch (NumberFormatException e) {
             throw new ParseException(MESSAGE_INVALID_AMOUNT);
         }

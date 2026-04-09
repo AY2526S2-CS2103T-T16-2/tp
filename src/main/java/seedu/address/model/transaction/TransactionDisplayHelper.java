@@ -12,6 +12,9 @@ public final class TransactionDisplayHelper {
     private TransactionDisplayHelper() {
     }
 
+    /**
+     * Returns the direction label shown for the current person in the given transaction.
+     */
     public static String directionText(Person currentPerson, Transaction transaction) {
         if (currentPerson == null || transaction == null) {
             return "";
@@ -25,6 +28,9 @@ public final class TransactionDisplayHelper {
         return "";
     }
 
+    /**
+     * Returns the name of the counterparty shown for the current person in the given transaction.
+     */
     public static String otherPartyName(Person currentPerson, Transaction transaction) {
         if (currentPerson == null || transaction == null) {
             return "";

@@ -4,8 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import seedu.address.model.transaction.TransactionComparators;
-import seedu.address.model.transaction.TransactionSortState;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -14,6 +12,8 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 import seedu.address.model.transaction.Transaction;
+import seedu.address.model.transaction.TransactionComparators;
+import seedu.address.model.transaction.TransactionSortState;
 
 /**
  * Settles a specific transaction while keeping it in history.

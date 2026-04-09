@@ -12,6 +12,9 @@ public final class TransactionSortState {
     private final TransactionSortKey key;
     private final SortDirection direction;
 
+    /**
+     * Creates a transaction sort state for the given column key and direction.
+     */
     public TransactionSortState(TransactionSortKey key, SortDirection direction) {
         this.key = Objects.requireNonNull(key);
         this.direction = Objects.requireNonNull(direction);
@@ -48,9 +51,9 @@ public final class TransactionSortState {
 
     @Override
     public String toString() {
-        return "TransactionSortState{" +
-                "key=" + key +
-                ", direction=" + direction +
-                "}";
+        return "TransactionSortState{"
+                + "key=" + key
+                + ", direction=" + direction
+                + "}";
     }
 }

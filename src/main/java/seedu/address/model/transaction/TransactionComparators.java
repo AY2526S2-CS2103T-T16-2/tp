@@ -11,6 +11,9 @@ public final class TransactionComparators {
     private TransactionComparators() {
     }
 
+    /**
+     * Returns the comparator that matches the given transaction sort state for the selected person.
+     */
     public static Comparator<Transaction> comparatorFor(TransactionSortState state, Person currentPerson) {
         Comparator<Transaction> base = comparatorForKey(state.getKey(), currentPerson);
         return state.getDirection() == SortDirection.DESCENDING ? base.reversed() : base;

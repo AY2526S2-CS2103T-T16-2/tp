@@ -37,6 +37,8 @@ public class SimplifyCommand extends Command {
             "At least 3 distinct person indices are required.";
     public static final String MESSAGE_DUPLICATE_PERSON_INDEX =
             "Duplicate person index detected: %1$d";
+    public static final String MESSAGE_INVALID_PERSON_INDEX =
+            Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX + ": %1$d";
 
     private static final double EPSILON = 1e-6;
 
@@ -72,7 +74,7 @@ public class SimplifyCommand extends Command {
 
         for (Index index : participantIndices) {
             if (index.getZeroBased() >= lastShownList.size()) {
-                throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+                throw new CommandException(String.format(MESSAGE_INVALID_PERSON_INDEX, index.getOneBased()));
             }
 
             int zeroBased = index.getZeroBased();

@@ -143,7 +143,9 @@ Examples:
 
 ### Advanced Search: `find`
 
-The `find` command has been significantly enhanced to support multi-criteria filtering, allowing you to search for persons using various attributes including names, transaction details, amounts, and tags. This powerful feature lets you quickly locate specific records in your address book using flexible filter combinations.
+The `find` command supports multi-criteria filtering, allowing you to search for persons using various attributes
+including names, transaction details, amounts, and tags. This powerful feature lets you quickly locate specific records
+in your address book using flexible filter combinations.
 
 Format: `find [n/NAME] [d/DESCRIPTION] [min/MIN_AMOUNT] [max/MAX_AMOUNT] [t/TAG]`
 

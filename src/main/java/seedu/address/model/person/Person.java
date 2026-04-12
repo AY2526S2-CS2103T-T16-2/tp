@@ -113,9 +113,9 @@ public class Person {
         String thisNameNormalised = normaliseName(getName().toString());
         String otherNameNormalised = normaliseName(otherPerson.getName().toString());
         return thisNameNormalised.equalsIgnoreCase(otherNameNormalised)
-                && phone.equals(otherPerson.phone)
+                || (phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
-                && address.equals(otherPerson.address);
+                && address.equals(otherPerson.address));
     }
 
     private String normaliseName(String name) {

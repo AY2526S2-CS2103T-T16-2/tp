@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.FindCommandParser.MESSAGE_INVALID_AMOUNT_RANGE;
 import static seedu.address.logic.parser.FindCommandParser.MESSAGE_INVALID_AMOUNT_VALUE;
+import static seedu.address.logic.parser.FindCommandParser.MESSAGE_NO_FILTER_PROVIDED;
 
 import java.util.Optional;
 
@@ -29,13 +30,13 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_emptyArgs_throwsParseException() {
-        assertParseFailure("     ", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure("     ", MESSAGE_NO_FILTER_PROVIDED);
     }
 
     @Test
     public void parse_noPrefixSupplied_throwsParseException() {
         // Plain text with no recognised prefix is treated as a preamble — no filter present.
-        assertParseFailure("alice", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure("alice", MESSAGE_NO_FILTER_PROVIDED);
     }
 
     // ======================== Name filter ========================

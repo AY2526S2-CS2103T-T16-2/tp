@@ -33,6 +33,10 @@ public class FindCommandParser implements Parser<FindCommand> {
     /** Prefix for the maximum transaction amount filter. */
     public static final Prefix PREFIX_MAX_AMOUNT = new Prefix("max/");
 
+    /** Error message when the no filter is provided after the command word */
+    public static final String MESSAGE_NO_FILTER_PROVIDED =
+            "At least one filter must be provided.";
+
     /** Error message when the minimum amount is greater than the maximum. */
     public static final String MESSAGE_INVALID_AMOUNT_RANGE =
             "Minimum amount cannot be greater than maximum amount.";
@@ -115,7 +119,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                 || argMultimap.getValue(CliSyntax.PREFIX_TAG).isPresent();
 
         if (!hasAnyFilter) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_NO_FILTER_PROVIDED);
         }
     }
 

@@ -148,161 +148,6 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
-### Advanced Search: `find`
-
-The `find` command supports multi-criteria filtering, allowing you to search for persons using various attributes
-including names, transaction details, amounts, and tags. This powerful feature lets you quickly locate specific records
-in your address book using flexible filter combinations.
-
-Format: `find [n/NAME] [d/DESCRIPTION] [min/MIN_AMOUNT] [max/MAX_AMOUNT] [t/TAG]` (at least one filter is required)
-
-<div markdown="span" class="alert alert-primary">**Key Principles:**
-* All filters are **optional**, but you must provide at least one
-* All provided filters use **AND logic** - persons must match ALL specified criteria
-* Search is **case-insensitive** for all text-based filters
-* Partial matches are supported for name, description, and tag filters
-</div>
-
-#### Filter Types
-
-**1. Name Filter (`n/`)**
-* Searches within person names using partial, case-insensitive matching
-* Matches any part of the full name (first name, last name, or both)
-* Example: `n/alex` will match "Alex", "Alexander", "Alexandra", "Alex Tan"
-
-**2. Description Filter (`d/`)**
-* Searches within transaction descriptions
-* Matches if ANY transaction of the person contains the keyword
-* Case-insensitive partial matching
-* Example: `d/lunch` will match transactions with descriptions like "Team lunch", "lunch meeting", "LUNCH"
-
-**3. Minimum Amount Filter (`min/`)**
-* Finds persons who have at least one transaction with amount ≥ the specified value
-* Must be a positive number (decimals allowed)
-* Example: `min/50` finds persons with at least one transaction of $50 or more
-
-**4. Maximum Amount Filter (`max/`)**
-* Finds persons who have at least one transaction with amount ≤ the specified value
-* Must be a positive number (decimals allowed)
-* Example: `max/100` finds persons with at least one transaction of $100 or less
-
-**5. Tag Filter (`t/`)**
-* Searches for persons with specific tags
-* Case-insensitive partial matching on tag names
-* Example: `t/friend` will match tags like "friend", "friends", "best-friend"
-
-
-
-#### Single Filter Examples
-
-**Finding by name:**
-* `find n/John` - Returns all persons with "John" in their name
-    * Matches: "John Doe", "Johnny Tan", "Mary Johnson"
-* `find n/tan` - Returns persons with "tan" anywhere in their name
-    * Matches: "Alex Tan", "Stanley Wong", "Tanisha Kumar"
-
-**Finding by transaction description:**
-* `find d/dinner` - Returns persons with any transaction containing "dinner"
-    * Useful for tracking who you've had dinner expenses with
-* `find d/project` - Returns persons with "project" in any transaction
-    * Helpful for identifying work-related transactions
-
-**Finding by amount:**
-* `find min/100` - Returns persons who owe you or you owe at least $100
-    * Useful for identifying large outstanding debts
-* `find max/20` - Returns persons with small transactions under $20
-    * Helpful for settling minor debts quickly
-
-**Finding by tag:**
-* `find t/colleague` - Returns all persons tagged as colleagues
-* `find t/vip` - Returns persons with VIP tags
-
-#### Multi-Filter Examples (Advanced Usage)
-
-The real power of the `find` command comes from combining multiple filters. All specified filters must match for a person to appear in the results.
-
-**Example 1: Finding high-value transactions with friends**
-* `find t/friend min/100`
-* Returns friends who have at least one transaction of $100 or more
-* Use case: Quickly identify which friends have significant outstanding amounts
-
-**Example 2: Finding lunch expenses within budget**
-* `find d/lunch min/10 max/30`
-* Returns persons with lunch transactions between $10 and $30
-* Use case: Review typical lunch expense patterns
-
-**Example 3: Locating specific person with transaction details**
-* `find n/alex d/dinner min/40`
-* Returns persons named "Alex" who have dinner transactions of at least $40
-* Use case: Finding a specific transaction you vaguely remember
-
-**Example 4: Finding colleagues with small outstanding amounts**
-* `find t/colleague max/25`
-* Returns colleagues with transactions under $25
-* Use case: Identify easy-to-settle work-related debts
-
-**Example 5: Complex search for trip expenses**
-* `find d/trip min/200 max/500 t/friend`
-* Returns friends with trip-related transactions between $200 and $500
-* Use case: Reviewing shared vacation expenses
-
-#### Tips for Effective Searching
-
-1. **Start broad, then narrow**: Begin with a single filter, then add more criteria if you get too many results
-    * First: `find d/dinner`
-    * Then refine: `find d/dinner min/50`
-
-2. **Use amount ranges for budgeting**: Set min/max to find transactions in specific price brackets
-    * Small debts to settle quickly: `find max/20`
-    * Large debts to prioritize: `find min/100`
-
-3. **Combine tags with amounts**: Filter by relationship and transaction size
-    * `find t/family min/50` - Family members with larger debts
-    * `find t/colleague max/30` - Small work-related expenses
-
-4. **Search descriptions for categories**: Use consistent keywords in descriptions, then search them
-    * All groceries: `find d/groceries`
-    * All transport: `find d/grab` or `find d/taxi`
-
-5. **Remember partial matching**: You don't need exact words
-    * `find n/alex` works for "Alex", "Alexander", "Alexandra"
-    * `find d/din` works for "dinner", "dining"
-
-#### Common Search Scenarios
-
-| Scenario | Command | What it finds |
-|----------|---------|--------------|
-| All persons named John | `find n/john` | Anyone with "john" in their name |
-| Friends with big debts | `find t/friend min/100` | Friends with transactions ≥ $100 |
-| Small lunch expenses | `find d/lunch max/15` | Lunch transactions ≤ $15 |
-| Colleagues owing moderate amounts | `find t/colleague min/20 max/100` | Colleagues with transactions $20-$100 |
-| Recent dinner with Alex | `find n/alex d/dinner` | Alex's dinner transactions |
-| Trip expenses in range | `find d/trip min/150 max/400` | Trip transactions $150-$400 |
-
-#### Error Messages
-
-* `At least one filter must be provided` - You called `find` without any parameters
-* `Minimum amount cannot be greater than maximum amount` - Your min/ value exceeds max/ value
-* `Amount values for min/ and max/ must be positive numbers` - You entered invalid numbers
-* Duplicate prefix errors - You used the same prefix multiple times (e.g., `find n/alex n/john`)
-
-<div markdown="span" class="alert alert-info"> **Note:**
-After using `find` to filter the list, the displayed indices change to match the filtered view. Any subsequent commands (like `delete`, `settle`, `addtxn`) will operate on these filtered indices, not the original positions.
-</div>
-
-#### Quick Reference
-
-```
-find n/NAME              # Search by name
-find d/DESCRIPTION       # Search by transaction description  
-find min/AMOUNT          # Transactions at least AMOUNT
-find max/AMOUNT          # Transactions at most AMOUNT
-find t/TAG               # Search by tag
-find n/NAME t/TAG        # Combine filters (AND logic)
-find min/X max/Y         # Amount range [X, Y]
-find d/DESC min/X max/Y  # Description with amount range
-```
-
 ### Deleting a person or transaction : `delete`
 
 Removes a specific person or transaction from the records. This command has two modes: deleting entire persons or deleting individual transactions.
@@ -488,6 +333,161 @@ After adding a transaction, both persons will show the transaction in their tran
 * `settleup INDEX1 INDEX2 INDEX3...` - Settle all transactions in a group
 * `delete INDEX t/TRANS_INDEX` - Remove a transaction entirely
 * `find d/DESCRIPTION` - Search for transactions by description
+
+### Advanced Search: `find`
+
+The `find` command supports multi-criteria filtering, allowing you to search for persons using various attributes
+including names, transaction details, amounts, and tags. This powerful feature lets you quickly locate specific records
+in your address book using flexible filter combinations.
+
+Format: `find [n/NAME] [d/DESCRIPTION] [min/MIN_AMOUNT] [max/MAX_AMOUNT] [t/TAG]` (at least one filter is required)
+
+<div markdown="span" class="alert alert-primary">**Key Principles:**
+* All filters are **optional**, but you must provide at least one
+* All provided filters use **AND logic** - persons must match ALL specified criteria
+* Search is **case-insensitive** for all text-based filters
+* Partial matches are supported for name, description, and tag filters
+</div>
+
+#### Filter Types
+
+**1. Name Filter (`n/`)**
+* Searches within person names using partial, case-insensitive matching
+* Matches any part of the full name (first name, last name, or both)
+* Example: `n/alex` will match "Alex", "Alexander", "Alexandra", "Alex Tan"
+
+**2. Description Filter (`d/`)**
+* Searches within transaction descriptions
+* Matches if ANY transaction of the person contains the keyword
+* Case-insensitive partial matching
+* Example: `d/lunch` will match transactions with descriptions like "Team lunch", "lunch meeting", "LUNCH"
+
+**3. Minimum Amount Filter (`min/`)**
+* Finds persons who have at least one transaction with amount ≥ the specified value
+* Must be a positive number (decimals allowed)
+* Example: `min/50` finds persons with at least one transaction of $50 or more
+
+**4. Maximum Amount Filter (`max/`)**
+* Finds persons who have at least one transaction with amount ≤ the specified value
+* Must be a positive number (decimals allowed)
+* Example: `max/100` finds persons with at least one transaction of $100 or less
+
+**5. Tag Filter (`t/`)**
+* Searches for persons with specific tags
+* Case-insensitive partial matching on tag names
+* Example: `t/friend` will match tags like "friend", "friends", "best-friend"
+
+
+
+#### Single Filter Examples
+
+**Finding by name:**
+* `find n/John` - Returns all persons with "John" in their name
+    * Matches: "John Doe", "Johnny Tan", "Mary Johnson"
+* `find n/tan` - Returns persons with "tan" anywhere in their name
+    * Matches: "Alex Tan", "Stanley Wong", "Tanisha Kumar"
+
+**Finding by transaction description:**
+* `find d/dinner` - Returns persons with any transaction containing "dinner"
+    * Useful for tracking who you've had dinner expenses with
+* `find d/project` - Returns persons with "project" in any transaction
+    * Helpful for identifying work-related transactions
+
+**Finding by amount:**
+* `find min/100` - Returns persons who owe you or you owe at least $100
+    * Useful for identifying large outstanding debts
+* `find max/20` - Returns persons with small transactions under $20
+    * Helpful for settling minor debts quickly
+
+**Finding by tag:**
+* `find t/colleague` - Returns all persons tagged as colleagues
+* `find t/vip` - Returns persons with VIP tags
+
+#### Multi-Filter Examples (Advanced Usage)
+
+The real power of the `find` command comes from combining multiple filters. All specified filters must match for a person to appear in the results.
+
+**Example 1: Finding high-value transactions with friends**
+* `find t/friend min/100`
+* Returns friends who have at least one transaction of $100 or more
+* Use case: Quickly identify which friends have significant outstanding amounts
+
+**Example 2: Finding lunch expenses within budget**
+* `find d/lunch min/10 max/30`
+* Returns persons with lunch transactions between $10 and $30
+* Use case: Review typical lunch expense patterns
+
+**Example 3: Locating specific person with transaction details**
+* `find n/alex d/dinner min/40`
+* Returns persons named "Alex" who have dinner transactions of at least $40
+* Use case: Finding a specific transaction you vaguely remember
+
+**Example 4: Finding colleagues with small outstanding amounts**
+* `find t/colleague max/25`
+* Returns colleagues with transactions under $25
+* Use case: Identify easy-to-settle work-related debts
+
+**Example 5: Complex search for trip expenses**
+* `find d/trip min/200 max/500 t/friend`
+* Returns friends with trip-related transactions between $200 and $500
+* Use case: Reviewing shared vacation expenses
+
+#### Tips for Effective Searching
+
+1. **Start broad, then narrow**: Begin with a single filter, then add more criteria if you get too many results
+    * First: `find d/dinner`
+    * Then refine: `find d/dinner min/50`
+
+2. **Use amount ranges for budgeting**: Set min/max to find transactions in specific price brackets
+    * Small debts to settle quickly: `find max/20`
+    * Large debts to prioritize: `find min/100`
+
+3. **Combine tags with amounts**: Filter by relationship and transaction size
+    * `find t/family min/50` - Family members with larger debts
+    * `find t/colleague max/30` - Small work-related expenses
+
+4. **Search descriptions for categories**: Use consistent keywords in descriptions, then search them
+    * All groceries: `find d/groceries`
+    * All transport: `find d/grab` or `find d/taxi`
+
+5. **Remember partial matching**: You don't need exact words
+    * `find n/alex` works for "Alex", "Alexander", "Alexandra"
+    * `find d/din` works for "dinner", "dining"
+
+#### Common Search Scenarios
+
+| Scenario | Command | What it finds |
+|----------|---------|--------------|
+| All persons named John | `find n/john` | Anyone with "john" in their name |
+| Friends with big debts | `find t/friend min/100` | Friends with transactions ≥ $100 |
+| Small lunch expenses | `find d/lunch max/15` | Lunch transactions ≤ $15 |
+| Colleagues owing moderate amounts | `find t/colleague min/20 max/100` | Colleagues with transactions $20-$100 |
+| Recent dinner with Alex | `find n/alex d/dinner` | Alex's dinner transactions |
+| Trip expenses in range | `find d/trip min/150 max/400` | Trip transactions $150-$400 |
+
+#### Error Messages
+
+* `At least one filter must be provided` - You called `find` without any parameters
+* `Minimum amount cannot be greater than maximum amount` - Your min/ value exceeds max/ value
+* `Amount values for min/ and max/ must be positive numbers` - You entered invalid numbers
+* Duplicate prefix errors - You used the same prefix multiple times (e.g., `find n/alex n/john`)
+
+<div markdown="span" class="alert alert-info"> **Note:**
+After using `find` to filter the list, the displayed indices change to match the filtered view. Any subsequent commands (like `delete`, `settle`, `addtxn`) will operate on these filtered indices, not the original positions.
+</div>
+
+#### Quick Reference
+
+```
+find n/NAME              # Search by name
+find d/DESCRIPTION       # Search by transaction description  
+find min/AMOUNT          # Transactions at least AMOUNT
+find max/AMOUNT          # Transactions at most AMOUNT
+find t/TAG               # Search by tag
+find n/NAME t/TAG        # Combine filters (AND logic)
+find min/X max/Y         # Amount range [X, Y]
+find d/DESC min/X max/Y  # Description with amount range
+```
 
 ### Clearing all entries : `clear`
 

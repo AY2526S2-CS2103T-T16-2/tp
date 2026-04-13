@@ -114,6 +114,11 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 A person can have any number of tags (including 0)
 </div>
 
+* IOU does not allow duplicate persons.
+  Two persons are considered duplicates if they have the same name (case-insensitive; extra spaces are ignored) **or**
+  the same phone + email + address.
+* If you attempt to add a duplicate person, IOU will show: `This person already exists in IOU.`
+
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
@@ -136,6 +141,8 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
 * When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
 * You can remove all the person’s tags by typing `t/` without
     specifying any tags after it.
+* Editing is rejected if it would make the person a duplicate of another existing person (see the `add` command for the
+  duplicate-person definition). IOU will show: `This person already exists in the address book.`
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
@@ -343,9 +350,9 @@ A single transaction appears in both the debtor's and creditor's transaction pan
 
 #### Common Use Cases:
 
-**Removing duplicate entries:**
+**Removing accidental extra entries:**
 ```
-delete 6  # Remove duplicate person
+delete 6  # Remove an unwanted extra person
 ```
 
 **Fixing mistaken transaction:**
@@ -660,6 +667,9 @@ Advanced users can edit the JSON files directly.
 * `[JAR file location]/data/addressbook.json` stores persons.
 * `[JAR file location]/data/addressbook_transactions.json` stores transactions.
 * If you edit transactions manually, debtor and creditor entries must still match valid persons in the address book.
+* `addressbook.json` must not contain duplicate persons (same name, case-insensitive with extra spaces ignored, **or**
+  the same phone + email + address). Duplicate persons will cause IOU to fail to load your saved data correctly and it
+  will start with an empty address book (plus the default `Me` contact).
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
 If your changes make either file invalid, IOU may fail to load your saved data correctly at the next run. Hence, it is recommended to take a backup of both files before editing them.<br>

@@ -1,6 +1,7 @@
-@startuml
+@startuml LogicSequenceDiagramTracing
 !include ../style.puml
-skinparam ArrowFontStyle plain
+
+title Logic Sequence Diagram (Tracing)
 
 Participant ":LogicManager" as logic LOGIC_COLOR
 Participant ":AddressBookParser" as abp LOGIC_COLOR
@@ -11,10 +12,10 @@ Participant "command:EditCommand" as ec LOGIC_COLOR
 activate logic
 logic -> abp ++: parseCommand(commandText)
 create ecp
-abp -> ecp
+abp -> ecp : new EditCommandParser()
 abp -> ecp ++: parse(arguments)
 create ec
-ecp -> ec ++: index, editPersonDescriptor
+ecp -> ec ++: new EditCommand(index, editPersonDescriptor)
 ec --> ecp --
 ecp --> abp --: command
 abp --> logic --: command

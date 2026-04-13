@@ -1,26 +1,28 @@
-@startuml
+@startuml ParserClasses
 !include style.puml
 skinparam arrowThickness 1.1
 skinparam arrowColor LOGIC_COLOR_T4
 skinparam classBackgroundColor LOGIC_COLOR
 
-Class "{abstract}\nCommand" as Command
-Class XYZCommand
-Class AddTransactionCommand
+title Parser Classes
 
-package "Parser classes"{
-Class "<<interface>>\nParser" as Parser
-Class AddressBookParser
-Class XYZCommandParser
-Class AddTransactionCommandParser
-Class CliSyntax
-Class ParserUtil
-Class ArgumentMultimap
-Class ArgumentTokenizer
-Class Prefix
+class "{abstract}\nCommand" as Command
+class XYZCommand
+class AddTransactionCommand
+
+package "Parser Classes" {
+class "<<interface>>\nParser" as Parser
+class AddressBookParser
+class XYZCommandParser
+class AddTransactionCommandParser
+class CliSyntax
+class ParserUtil
+class ArgumentMultimap
+class ArgumentTokenizer
+class Prefix
 }
 
-Class HiddenOutside #FFFFFF
+class HiddenOutside #FFFFFF
 HiddenOutside ..> AddressBookParser
 
 AddressBookParser .down.> XYZCommandParser: <<create>>

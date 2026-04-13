@@ -1,19 +1,21 @@
-@startuml
+@startuml RemarkCommandClassDiagram
 hide circle
 skinparam classAttributeIconSize 0
 
-Class "{abstract}\nCommand" as Command {
+title Remark Command Class Diagram
+
+class "{abstract}\nCommand" as Command {
   +execute(Model): CommandResult
 }
-Class RemarkCommand {
+class RemarkCommand {
   +COMMAND_WORD: String
   +MESSAGE_USAGE: String
   +MESSAGE_NOT_IMPLEMENTED_YET: String
   +execute(Model): CommandResult
 }
-Class CommandException
+class CommandException
 
 RemarkCommand -up-|> Command
-Command ..> CommandException: throws >
-RemarkCommand .right.> CommandException: throws >
+Command ..> CommandException : throws
+RemarkCommand .right.> CommandException : throws
 @enduml

@@ -1,6 +1,7 @@
-@startuml
+@startuml UndoSequenceDiagramLogic
 !include style.puml
-skinparam ArrowFontStyle plain
+
+title Undo Command Sequence Diagram (Logic)
 
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
@@ -18,7 +19,7 @@ LogicManager -> AddressBookParser : parseCommand(undo)
 activate AddressBookParser
 
 create UndoCommand
-AddressBookParser -> UndoCommand
+AddressBookParser -> UndoCommand : new UndoCommand()
 activate UndoCommand
 
 UndoCommand --> AddressBookParser
@@ -41,6 +42,6 @@ deactivate UndoCommand
 UndoCommand -[hidden]-> LogicManager : result
 destroy UndoCommand
 
-[<--LogicManager
+[<-- LogicManager : result
 deactivate LogicManager
 @enduml

@@ -429,9 +429,9 @@ This creates three separate transaction records between persons 1 and 2, allowin
 #### Amount Formatting Rules:
 
 * **Valid amounts:** `50`, `50.5`, `50.50`, `0.01`
-* **Invalid amounts:** `$50` (no currency symbols allowed), `50.` (must not end with a decimal point), `50.505` (more than 2 decimals not allowed)
+* **Invalid amounts:** `$50` (no currency symbols allowed), `50.` (must not end with a decimal point), `50.505` (more than 2 decimal places not allowed)
 * **Minimum amount:** Must be greater than 0
-* **Maximum decimals:** 2 places
+* **Maximum decimal places:** 2 
 
 #### Description Best Practices:
 

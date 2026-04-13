@@ -78,16 +78,16 @@ public class EditCommand extends Command {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        if (index.getZeroBased() == 0 && editPersonDescriptor.getName().isPresent()) {
+        Person personToEdit = lastShownList.get(index.getZeroBased()); // move this up
+
+        if (personToEdit.getName().equals(new Name("Me")) && editPersonDescriptor.getName().isPresent()) {
             throw new CommandException(MESSAGE_EDIT_ME_NAME);
         }
-
-        Person personToEdit = lastShownList.get(index.getZeroBased());
 
         // Validate name uniqueness BEFORE createEditedPerson mutates any transactions
         if (editPersonDescriptor.getName().isPresent()) {
             Name incomingName = editPersonDescriptor.getName().get();
-            boolean nameAlreadyTaken = lastShownList.stream()
+            boolean nameAlreadyTaken = model.getAddressBook().getPersonList().stream()
                     .filter(p -> !p.isSamePerson(personToEdit))
                     .anyMatch(p -> p.getName().equals(incomingName));
             if (nameAlreadyTaken) {

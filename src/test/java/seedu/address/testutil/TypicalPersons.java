@@ -23,7 +23,7 @@ import seedu.address.model.person.Person;
  */
 public class TypicalPersons {
 
-    public static final Person ALICE = new PersonBuilder().withName("Alice Pauline")
+    public static final Person ME = new PersonBuilder().withName("Me")
             .withAddress("123, Jurong West Ave 6, #08-111").withEmail("alice@example.com")
             .withPhone("94351253")
             .withTags("friends")
@@ -90,7 +90,7 @@ public class TypicalPersons {
         // IMPORTANT: Person holds a mutable transaction set. Some tests append/remove transactions.
         // Returning shared static Person instances will leak state between tests.
         return new ArrayList<>(Arrays.asList(
-                copyWithoutTransactions(ALICE),
+                copyWithoutTransactions(ME),
                 copyWithoutTransactions(BENSON),
                 copyWithoutTransactions(CARL),
                 copyWithoutTransactions(DANIEL),

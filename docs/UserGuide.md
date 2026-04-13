@@ -147,7 +147,7 @@ The `find` command supports multi-criteria filtering, allowing you to search for
 including names, transaction details, amounts, and tags. This powerful feature lets you quickly locate specific records
 in your address book using flexible filter combinations.
 
-Format: `find [n/NAME] [d/DESCRIPTION] [min/MIN_AMOUNT] [max/MAX_AMOUNT] [t/TAG]`
+Format: `find [n/NAME] [d/DESCRIPTION] [min/MIN_AMOUNT] [max/MAX_AMOUNT] [t/TAG]` (at least one filter is required)
 
 <div markdown="span" class="alert alert-primary">**Key Principles:**
 * All filters are **optional**, but you must provide at least one
@@ -401,7 +401,8 @@ Result: Records that Sarah owes you $200
 
 **Scenario 3: Splitting group purchases**
 ```
-Situation: You bought concert tickets for $150 each. Your friend Bob (index 4) needs to pay you back.
+Situation: You bought concert tickets for $150 each.
+Your friend Bob (index 4) needs to pay you back.
 Command: addtxn 4 1 a/150 d/Concert tickets - Taylor Swift
 Result: Records that Bob owes you $150 for tickets
 ```
@@ -611,7 +612,7 @@ After settling, you can still view the transaction:
 
 Computes a minimal settlement plan for 3 or more selected people and shows who should pay whom, without modifying any transactions yet.
 
-Format: `simplify PERSON_INDEX [MORE_PERSON_INDEXES]...`
+Format: `simplify PERSON_INDEX_1 PERSON_INDEX_2 PERSON_INDEX_3 [MORE_PERSON_INDEXES]...`
 
 * You must provide at least 3 distinct person indexes.
 * All indexes refer to the currently displayed person list.
@@ -627,7 +628,7 @@ Examples:
 
 Marks all unsettled in-group transactions as settled in one action for 3 or more selected people.
 
-Format: `settleup PERSON_INDEX [MORE_PERSON_INDEXES]...`
+Format: `settleup PERSON_INDEX_1 PERSON_INDEX_2 PERSON_INDEX_3 [MORE_PERSON_INDEXES]...`
 
 * You must provide at least 3 distinct person indexes.
 * All indexes refer to the currently displayed person list.
@@ -691,9 +692,10 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`<br><br>`delete INDEX t/TRANSACTION_INDEX`<br> e.g., `delete 3 t/1`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find** | `find [n/NAME] [d/DESCRIPTION] [min/MIN_AMOUNT] [max/MAX_AMOUNT] [t/TAG]`
+**Find** | `find [n/NAME] [d/DESCRIPTION] [min/MIN_AMOUNT] [max/MAX_AMOUNT] [t/TAG]` (at least one filter required)<br> e.g., `find n/James` or `find d/lunch min/10 max/30`
 **List** | `list`
 **Settle** | `settle PERSON_INDEX t/TRANSACTION_INDEX`<br> e.g., `settle 1 t/2`
-**Simplify** | `simplify PERSON_INDEX [MORE_PERSON_INDEXES]...`<br> e.g., `simplify 1 2 3 4`
-**Settle Up** | `settleup PERSON_INDEX [MORE_PERSON_INDEXES]...`<br> e.g., `settleup 1 2 3 4`
+**Simplify** | `simplify PERSON_INDEX_1 PERSON_INDEX_2 PERSON_INDEX_3 [MORE_PERSON_INDEXES]...`<br> e.g., `simplify 1 2 3 4`
+**Settle Up** | `settleup PERSON_INDEX_1 PERSON_INDEX_2 PERSON_INDEX_3 [MORE_PERSON_INDEXES]...`<br> e.g., `settleup 1 2 3 4`
 **Help** | `help`
+**Exit** | `exit`

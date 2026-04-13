@@ -321,7 +321,7 @@ public class TransactionListPanelTest {
         TableColumn<Transaction, String> otherPartyColumn = getField(panel, "otherPartyColumn");
         TableColumn<Transaction, String> amountColumn = getField(panel, "amountColumn");
 
-        assertSame(TableView.UNCONSTRAINED_RESIZE_POLICY, transactionTable.getColumnResizePolicy());
+        assertSame(TableView.CONSTRAINED_RESIZE_POLICY, transactionTable.getColumnResizePolicy());
         assertFalse(indexColumn.isSortable());
         assertEquals(TableColumn.SortType.DESCENDING, amountColumn.getSortType());
         assertTrue(amountColumn.getComparator().compare("$2.00", "$10.00") < 0);

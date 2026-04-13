@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -24,30 +25,38 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         // Reject duplicate t/ prefixes — e.g. "1 t/1delete 1 t/1"
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_TRANSACTION_INDEX);
 
+        String personIndexToken = argMultimap.getPreamble().trim();
+        final Index targetIndex;
         try {
-            Index targetIndex = ParserUtil.parseIndex(argMultimap.getPreamble());
-            Index transactionIndex = null;
+            targetIndex = ParserUtil.parseIndex(personIndexToken);
+        } catch (ParseException pe) {
+            if (personIndexToken.matches("-?\\d+")) {
+                throw new ParseException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, pe);
+            }
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), pe);
+        }
 
-            if (argMultimap.getValue(PREFIX_TRANSACTION_INDEX).isPresent()) {
-                String rawTransactionIndex = argMultimap.getValue(PREFIX_TRANSACTION_INDEX).get();
+        Index transactionIndex = null;
+        if (argMultimap.getValue(PREFIX_TRANSACTION_INDEX).isPresent()) {
+            String rawTransactionIndex = argMultimap.getValue(PREFIX_TRANSACTION_INDEX).get();
 
-                // Reject values with extra text after the index, e.g. "1delete 1"
-                if (!rawTransactionIndex.trim().matches("\\d+")) {
-                    throw new ParseException(
-                            String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
-                }
-
-                transactionIndex = ParserUtil.parseIndex(rawTransactionIndex);
+            // Reject values with extra text after the index, e.g. "1delete 1"
+            if (!rawTransactionIndex.trim().matches("\\d+")) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
             }
 
-            return (transactionIndex == null)
-                    ? new DeleteCommand(targetIndex)
-                    : new DeleteCommand(targetIndex, transactionIndex);
-
-        } catch (ParseException pe) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), pe);
+            try {
+                transactionIndex = ParserUtil.parseIndex(rawTransactionIndex);
+            } catch (ParseException pe) {
+                throw new ParseException(
+                        String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), pe);
+            }
         }
+
+        return (transactionIndex == null)
+                ? new DeleteCommand(targetIndex)
+                : new DeleteCommand(targetIndex, transactionIndex);
     }
 
 }

@@ -78,8 +78,8 @@ public class DeleteCommandParserTest {
     public void parse_invalidPersonIndex_throwsParseException() {
         // Person index is zero or negative
         assertParseFailure(parser, "0 t/1",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+            Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         assertParseFailure(parser, "-1",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+            Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 }

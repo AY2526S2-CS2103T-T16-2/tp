@@ -114,7 +114,7 @@ public class TransactionListPanel extends UiPart<Region> {
 
     @FXML
     private void initialize() {
-        transactionTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        transactionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         transactionTable.setRowFactory(table -> new TransactionRow());
         transactionTable.comparatorProperty().addListener((observable, oldComparator, newComparator) ->
                 notifyTransactionSortListener());

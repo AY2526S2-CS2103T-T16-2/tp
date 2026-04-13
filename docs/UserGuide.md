@@ -639,18 +639,6 @@ Examples:
 * `settleup 1 2 3`
 * `settleup 1 2 3 4 5`
 
-### Deleting a transaction : `delete`
-
-Removes a specific transaction from a person; specifying both the person index and transaction index lets you target the exact entry.
-
-Format: `delete INDEX t/TRANSACTION_INDEX`
-
-* The person index refers to the displayed person list.
-* The transaction index refers to the displayed transaction panel for that selected person.
-* Deleting a transaction removes the same shared record from both the debtor and the creditor.
-
-Example: `delete 1 t/2`
-
 ### Exiting the program : `exit`
 
 Exits the program.

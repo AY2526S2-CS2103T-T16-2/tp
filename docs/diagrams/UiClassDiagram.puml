@@ -1,31 +1,33 @@
-@startuml
+@startuml UiClassDiagram
 !include style.puml
 skinparam arrowThickness 1.1
 skinparam arrowColor UI_COLOR_T4
 skinparam classBackgroundColor UI_COLOR
 
-package UI <<Rectangle>>{
-Class "<<interface>>\nUi" as Ui
-Class "{abstract}\nUiPart" as UiPart
-Class UiManager
-Class MainWindow
-Class HelpWindow
-Class ResultDisplay
-Class PersonListPanel
-Class PersonCard
-Class StatusBarFooter
-Class CommandBox
+title UI Class Diagram
+
+package UI <<Rectangle>> {
+class "<<interface>>\nUi" as Ui
+class "{abstract}\nUiPart" as UiPart
+class UiManager
+class MainWindow
+class HelpWindow
+class ResultDisplay
+class PersonListPanel
+class PersonCard
+class StatusBarFooter
+class CommandBox
 }
 
 package Model <<Rectangle>> {
-Class HiddenModel #FFFFFF
+class HiddenModel #FFFFFF
 }
 
 package Logic <<Rectangle>> {
-Class HiddenLogic #FFFFFF
+class HiddenLogic #FFFFFF
 }
 
-Class HiddenOutside #FFFFFF
+class HiddenOutside #FFFFFF
 HiddenOutside ..> Ui
 
 UiManager .left.|> Ui

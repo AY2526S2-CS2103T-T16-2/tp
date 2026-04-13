@@ -1,30 +1,32 @@
-@startuml
+@startuml ModelClassDiagram
 !include style.puml
 skinparam arrowThickness 1.1
 skinparam arrowColor MODEL_COLOR
 skinparam classBackgroundColor MODEL_COLOR
 
-Package Model as ModelPackage <<Rectangle>>{
-Class "<<interface>>\nReadOnlyAddressBook" as ReadOnlyAddressBook
-Class "<<interface>>\nReadOnlyUserPrefs" as ReadOnlyUserPrefs
-Class "<<interface>>\nModel" as Model
-Class AddressBook
-Class ModelManager
-Class UserPrefs
+title Model Class Diagram
 
-Class UniquePersonList
-Class Person
-Class Address
-Class Email
-Class Name
-Class Phone
-Class Tag
-Class Transaction
+package Model as ModelPackage <<Rectangle>> {
+class "<<interface>>\nReadOnlyAddressBook" as ReadOnlyAddressBook
+class "<<interface>>\nReadOnlyUserPrefs" as ReadOnlyUserPrefs
+class "<<interface>>\nModel" as Model
+class AddressBook
+class ModelManager
+class UserPrefs
 
-Class I #FFFFFF
+class UniquePersonList
+class Person
+class Address
+class Email
+class Name
+class Phone
+class Tag
+class Transaction
+
+class I #FFFFFF
 }
 
-Class HiddenOutside #FFFFFF
+class HiddenOutside #FFFFFF
 HiddenOutside ..> Model
 
 AddressBook .up.|> ReadOnlyAddressBook

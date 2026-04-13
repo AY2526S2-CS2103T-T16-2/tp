@@ -1,20 +1,22 @@
-@startuml
+@startuml ArchitectureDiagram
 !include <office/Concepts/globe_internet>
 !include <office/Concepts/documents>
 !include <office/Users/user>
 !include style.puml
 
-Package " "<<Rectangle>>{
-    Class UI UI_COLOR
-    Class Logic LOGIC_COLOR
-    Class Storage STORAGE_COLOR
-    Class Model MODEL_COLOR
-    Class Main #grey
-    Class Commons LOGIC_COLOR_T2
+title Architecture Diagram
+
+package "AddressBook" <<Rectangle>> {
+    class UI UI_COLOR
+    class Logic LOGIC_COLOR
+    class Storage STORAGE_COLOR
+    class Model MODEL_COLOR
+    class Main #grey
+    class Commons LOGIC_COLOR_T2
 }
 
-Class "<$user>" as User MODEL_COLOR_T2
-Class "<$documents>" as File UI_COLOR_T1
+class "<$user>" as User MODEL_COLOR_T2
+class "<$documents>" as File UI_COLOR_T1
 
 
 UI -[#green]> Logic

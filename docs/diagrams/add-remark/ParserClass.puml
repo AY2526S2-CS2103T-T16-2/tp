@@ -1,14 +1,16 @@
-@startuml
+@startuml RemarkParserClassDiagram
 hide circle
 skinparam classAttributeIconSize 0
 
-Class "<<interface>>\nParser" as Parser
-Class RemarkCommandParser {
+title Remark Parser Class Diagram
+
+class "<<interface>>\nParser" as Parser
+class RemarkCommandParser {
   +parse(): RemarkCommand
 }
-Class ParserException
+class ParserException
 
 RemarkCommandParser .up.|> Parser
-Parser .right.> ParserException: throws >
-RemarkCommandParser .right.> ParserException: throws >
+Parser .right.> ParserException : throws
+RemarkCommandParser .right.> ParserException : throws
 @enduml

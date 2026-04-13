@@ -1,8 +1,10 @@
-@startuml
+@startuml StorageClassDiagram
 !include style.puml
 skinparam arrowThickness 1.1
 skinparam arrowColor STORAGE_COLOR
 skinparam classBackgroundColor STORAGE_COLOR
+
+title Storage Class Diagram
 
 package Storage as StoragePackage {
 
@@ -41,10 +43,10 @@ JsonAddressBookStorage .up.|> AddressBookStorage
 JsonAddressBookStorage ..> JsonSerializableAddressBook
 JsonAddressBookStorage ..> JsonSerializableTransactionBook
 
-JsonSerializableAddressBook --> "*" JsonAdaptedPerson
-JsonAdaptedPerson --> "*" JsonAdaptedTag
+JsonSerializableAddressBook *--> "*" JsonAdaptedPerson
+JsonAdaptedPerson *--> "*" JsonAdaptedTag
 
-JsonSerializableTransactionBook --> "*" JsonAdaptedTransaction
+JsonSerializableTransactionBook *--> "*" JsonAdaptedTransaction
 JsonAdaptedTransaction --> "1" JsonAdaptedPerson : debtor
 JsonAdaptedTransaction --> "1" JsonAdaptedPerson : creditor
 

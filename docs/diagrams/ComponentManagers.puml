@@ -1,25 +1,27 @@
-@startuml
+@startuml ComponentManagers
 !include style.puml
 skinparam arrowThickness 1.1
 skinparam arrowColor LOGIC_COLOR_T4
 skinparam classBackgroundColor LOGIC_COLOR
 
+title Component Managers
+
 package Logic as LogicPackage {
-Class "<<interface>>\nLogic" as Logic
-Class LogicManager
+class "<<interface>>\nLogic" as Logic
+class LogicManager
 }
 
 package Model as ModelPackage {
-Class "<<interface>>\nModel" as Model
-Class ModelManager
+class "<<interface>>\nModel" as Model
+class ModelManager
 }
 
 package Storage as StoragePackage {
-Class "<<interface>>\nStorage" as Storage
-Class StorageManager
+class "<<interface>>\nStorage" as Storage
+class StorageManager
 }
 
-Class HiddenOutside #FFFFFF
+class HiddenOutside #FFFFFF
 HiddenOutside ..> Logic
 
 LogicManager .up.|> Logic

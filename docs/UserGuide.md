@@ -416,7 +416,7 @@ Result: Records that Bob owes you $150 for tickets
 
 **Scenario 4: Roommate shared expenses**
 ```
-Situation: Your roommate (index 2) paid the $120 electricity bill that you split.
+Situation: Your roommate (index 2) paid the $120 electricity bill.
 Command: addtxn 1 2 a/60 d/Electricity bill - January
 Result: Records your half of the shared utility bill
 ```
@@ -530,7 +530,8 @@ settle PERSON_INDEX t/TRANSACTION_INDEX
 
 **Example: Settling a lunch debt**
 ```
-Situation: You owe Alex (person 1) $25 for lunch. This is transaction #2 in Me panel.
+Situation: You owe Alex (person 1) $25 for lunch. 
+This is transaction #2 in Me panel.
 Command: settle 1 t/2
  
 Result:

@@ -52,6 +52,7 @@ public class EditCommand extends Command {
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_EDIT_ME_NAME = "The name of the 'me' contact cannot be edited.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -75,6 +76,10 @@ public class EditCommand extends Command {
 
         if (index.getZeroBased() >= lastShownList.size()) {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        }
+
+        if (index.getZeroBased() == 0 && editPersonDescriptor.getName().isPresent()) {
+            throw new CommandException(MESSAGE_EDIT_ME_NAME);
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());

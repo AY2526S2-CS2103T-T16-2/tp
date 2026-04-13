@@ -52,6 +52,7 @@ public class EditCommand extends Command {
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_EDIT_ME_NAME = "The name of the 'me' contact cannot be edited.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -77,12 +78,16 @@ public class EditCommand extends Command {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        Person personToEdit = lastShownList.get(index.getZeroBased());
+        Person personToEdit = lastShownList.get(index.getZeroBased()); // move this up
+
+        if (personToEdit.getName().equals(new Name("Me")) && editPersonDescriptor.getName().isPresent()) {
+            throw new CommandException(MESSAGE_EDIT_ME_NAME);
+        }
 
         // Validate name uniqueness BEFORE createEditedPerson mutates any transactions
         if (editPersonDescriptor.getName().isPresent()) {
             Name incomingName = editPersonDescriptor.getName().get();
-            boolean nameAlreadyTaken = lastShownList.stream()
+            boolean nameAlreadyTaken = model.getAddressBook().getPersonList().stream()
                     .filter(p -> !p.isSamePerson(personToEdit))
                     .anyMatch(p -> p.getName().equals(incomingName));
             if (nameAlreadyTaken) {

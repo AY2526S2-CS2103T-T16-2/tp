@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
+import static seedu.address.testutil.TypicalPersons.ME;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
@@ -46,8 +46,8 @@ public class AddressBookTest {
     @Test
     public void resetData_withDuplicatePersons_throwsDuplicatePersonException() {
         // Two persons with the same identity fields
-        Person editedAlice = new PersonBuilder(ALICE).withTags(VALID_TAG_HUSBAND).build();
-        List<Person> newPersons = Arrays.asList(ALICE, editedAlice);
+        Person editedAlice = new PersonBuilder(ME).withTags(VALID_TAG_HUSBAND).build();
+        List<Person> newPersons = Arrays.asList(ME, editedAlice);
         AddressBookStub newData = new AddressBookStub(newPersons);
 
         assertThrows(DuplicatePersonException.class, () -> addressBook.resetData(newData));
@@ -60,22 +60,22 @@ public class AddressBookTest {
 
     @Test
     public void addPersonAtFront_duplicatePerson_throwsDuplicatePersonException() {
-        addressBook.addPerson(ALICE);
-        assertThrows(DuplicatePersonException.class, () -> addressBook.addPersonAtFront(ALICE));
+        addressBook.addPerson(ME);
+        assertThrows(DuplicatePersonException.class, () -> addressBook.addPersonAtFront(ME));
     }
 
     @Test
     public void addPersonAtFront_emptyAddressBook_personIsFirst() {
-        addressBook.addPersonAtFront(ALICE);
-        assertEquals(ALICE, addressBook.getPersonList().get(0));
+        addressBook.addPersonAtFront(ME);
+        assertEquals(ME, addressBook.getPersonList().get(0));
     }
 
     @Test
     public void addPersonAtFront_nonEmptyAddressBook_personIsFirst() {
-        addressBook.addPerson(ALICE);
+        addressBook.addPerson(ME);
         addressBook.addPersonAtFront(BOB);
         assertEquals(BOB, addressBook.getPersonList().get(0));
-        assertEquals(ALICE, addressBook.getPersonList().get(1));
+        assertEquals(ME, addressBook.getPersonList().get(1));
     }
 
     @Test
@@ -85,19 +85,19 @@ public class AddressBookTest {
 
     @Test
     public void hasPerson_personNotInAddressBook_returnsFalse() {
-        assertFalse(addressBook.hasPerson(ALICE));
+        assertFalse(addressBook.hasPerson(ME));
     }
 
     @Test
     public void hasPerson_personInAddressBook_returnsTrue() {
-        addressBook.addPerson(ALICE);
-        assertTrue(addressBook.hasPerson(ALICE));
+        addressBook.addPerson(ME);
+        assertTrue(addressBook.hasPerson(ME));
     }
 
     @Test
     public void hasPerson_personWithSameIdentityFieldsInAddressBook_returnsTrue() {
-        addressBook.addPerson(ALICE);
-        Person editedAlice = new PersonBuilder(ALICE).withTags(VALID_TAG_HUSBAND).build();
+        addressBook.addPerson(ME);
+        Person editedAlice = new PersonBuilder(ME).withTags(VALID_TAG_HUSBAND).build();
         assertTrue(addressBook.hasPerson(editedAlice));
     }
 

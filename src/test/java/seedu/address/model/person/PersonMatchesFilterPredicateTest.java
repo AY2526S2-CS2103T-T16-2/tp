@@ -25,7 +25,7 @@ public class PersonMatchesFilterPredicateTest {
     private Person creditor;
 
     /** The primary person under test. */
-    private Person alice;
+    private Person me;
 
     /**
      * Sets up shared test fixtures before each test.
@@ -40,12 +40,12 @@ public class PersonMatchesFilterPredicateTest {
     @BeforeEach
     public void setUp() {
         creditor = new PersonBuilder().withName("Bob Tan").build();
-        alice = new PersonBuilder()
-                .withName("Alice Pauline")
+        me = new PersonBuilder()
+                .withName("Me")
                 .withTags("friends")
                 .build();
-        Transaction lunchTransaction = new Transaction(alice, creditor, 50.00, "Lunch money");
-        alice.appendTransaction(lunchTransaction);
+        Transaction lunchTransaction = new Transaction(me, creditor, 50.00, "Lunch money");
+        me.appendTransaction(lunchTransaction);
     }
 
     // ======================== Name filter tests ========================
@@ -54,35 +54,35 @@ public class PersonMatchesFilterPredicateTest {
     public void test_nameFilterAbsent_alwaysPasses() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_nameFilterPartialMatch_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("alice"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
-        assertTrue(predicate.test(alice));
+                Optional.of("me"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_nameFilterCaseInsensitive_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("ALICE"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
-        assertTrue(predicate.test(alice));
+                Optional.of("ME"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_nameFilterSubstringOfLastName_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("pau"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
-        assertTrue(predicate.test(alice));
+                Optional.of("e"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_nameFilterNoMatch_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.of("Charlie"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     // ======================== Description filter tests ========================
@@ -91,21 +91,21 @@ public class PersonMatchesFilterPredicateTest {
     public void test_descriptionFilterMatchesTransaction_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.of("lunch"), Optional.empty(), Optional.empty(), Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_descriptionFilterCaseInsensitive_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.of("LUNCH MONEY"), Optional.empty(), Optional.empty(), Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_descriptionFilterNoMatchingTransaction_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.of("rent"), Optional.empty(), Optional.empty(), Optional.empty());
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     @Test
@@ -122,21 +122,21 @@ public class PersonMatchesFilterPredicateTest {
     public void test_minAmountExactMatch_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.of(50.00), Optional.empty(), Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_minAmountBelowTransactionAmount_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.of(10.00), Optional.empty(), Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_minAmountAboveTransactionAmount_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.of(100.00), Optional.empty(), Optional.empty());
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     // ======================== Max amount filter tests ========================
@@ -145,21 +145,21 @@ public class PersonMatchesFilterPredicateTest {
     public void test_maxAmountExactMatch_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(50.00), Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_maxAmountAboveTransactionAmount_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(200.00), Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_maxAmountBelowTransactionAmount_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(10.00), Optional.empty());
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     // ======================== Amount range tests ========================
@@ -168,21 +168,21 @@ public class PersonMatchesFilterPredicateTest {
     public void test_amountWithinRange_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.of(10.00), Optional.of(100.00), Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_amountBelowRange_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.of(60.00), Optional.of(100.00), Optional.empty());
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     @Test
     public void test_amountAboveRange_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.of(10.00), Optional.of(30.00), Optional.empty());
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     @Test
@@ -203,28 +203,28 @@ public class PersonMatchesFilterPredicateTest {
     public void test_tagFilterExactMatch_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("friends"));
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_tagFilterCaseInsensitive_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("FRIENDS"));
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_tagFilterPartialMatch_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("frien"));
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_tagFilterNoMatchingTag_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("colleagues"));
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     @Test
@@ -240,23 +240,23 @@ public class PersonMatchesFilterPredicateTest {
     @Test
     public void test_allFiltersMatch_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("alice"),
+                Optional.of("me"),
                 Optional.of("lunch"),
                 Optional.of(10.00),
                 Optional.of(100.00),
                 Optional.of("friends"));
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     @Test
     public void test_nameMatchesButTagDoesNot_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("alice"),
+                Optional.of("me"),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.of("colleagues"));
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     @Test
@@ -267,7 +267,7 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.of("friends"));
-        assertFalse(predicate.test(alice));
+        assertFalse(predicate.test(me));
     }
 
     @Test
@@ -278,7 +278,7 @@ public class PersonMatchesFilterPredicateTest {
                 Optional.of(40.00),
                 Optional.of(60.00),
                 Optional.empty());
-        assertTrue(predicate.test(alice));
+        assertTrue(predicate.test(me));
     }
 
     // ======================== Equality tests ========================
@@ -286,23 +286,23 @@ public class PersonMatchesFilterPredicateTest {
     @Test
     public void equals_sameObject_returnsTrue() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("alice"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.of("me"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         assertEquals(predicate, predicate);
     }
 
     @Test
     public void equals_sameValues_returnsTrue() {
         PersonMatchesFilterPredicate first = buildPredicate(
-                Optional.of("alice"), Optional.of("lunch"), Optional.of(10.0), Optional.of(50.0), Optional.of("frd"));
+                Optional.of("me"), Optional.of("lunch"), Optional.of(10.0), Optional.of(50.0), Optional.of("frd"));
         PersonMatchesFilterPredicate second = buildPredicate(
-                Optional.of("alice"), Optional.of("lunch"), Optional.of(10.0), Optional.of(50.0), Optional.of("frd"));
+                Optional.of("me"), Optional.of("lunch"), Optional.of(10.0), Optional.of(50.0), Optional.of("frd"));
         assertEquals(first, second);
     }
 
     @Test
     public void equals_differentNameKeyword_returnsFalse() {
         PersonMatchesFilterPredicate first = buildPredicate(
-                Optional.of("alice"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.of("me"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         PersonMatchesFilterPredicate second = buildPredicate(
                 Optional.of("bob"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         assertFalse(first.equals(second));
@@ -320,14 +320,14 @@ public class PersonMatchesFilterPredicateTest {
     @Test
     public void equals_nullObject_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("alice"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.of("me"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         assertFalse(predicate.equals(null));
     }
 
     @Test
     public void equals_differentType_returnsFalse() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("alice"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+                Optional.of("me"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         assertFalse(predicate.equals(new Tag("friends")));
     }
 
@@ -336,13 +336,13 @@ public class PersonMatchesFilterPredicateTest {
     @Test
     public void toString_containsAllFields() {
         PersonMatchesFilterPredicate predicate = buildPredicate(
-                Optional.of("alice"),
+                Optional.of("me"),
                 Optional.of("lunch"),
                 Optional.of(5.0),
                 Optional.of(100.0),
                 Optional.of("friends"));
         String result = predicate.toString();
-        assertTrue(result.contains("alice"));
+        assertTrue(result.contains("me"));
         assertTrue(result.contains("lunch"));
         assertTrue(result.contains("5.0"));
         assertTrue(result.contains("100.0"));
@@ -353,7 +353,7 @@ public class PersonMatchesFilterPredicateTest {
 
     @Test
     public void getters_returnCorrectValues() {
-        Optional<String> name = Optional.of("alice");
+        Optional<String> name = Optional.of("me");
         Optional<String> desc = Optional.of("lunch");
         Optional<Double> min = Optional.of(5.0);
         Optional<Double> max = Optional.of(100.0);

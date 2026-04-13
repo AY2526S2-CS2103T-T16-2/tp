@@ -24,7 +24,6 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.model.transaction.Transaction;
-import seedu.address.model.util.SampleDataUtil;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for
@@ -36,8 +35,8 @@ public class DeleteCommandTest {
 
     @Test
     public void execute_validIndexUnfilteredList_success() {
-        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        DeleteCommand deleteCommand = new DeleteCommand(INDEX_SECOND_PERSON);
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 Messages.format(personToDelete));
@@ -51,7 +50,6 @@ public class DeleteCommandTest {
     @Test
     public void execute_deleteMeContact_throwsCommandException() {
         AddressBook addressBookWithMe = new AddressBook(getTypicalAddressBook());
-        addressBookWithMe.addPersonAtFront(SampleDataUtil.getMeContact());
         Model modelWithMe = new ModelManager(addressBookWithMe, new UserPrefs());
 
         DeleteCommand deleteCommand = new DeleteCommand(Index.fromOneBased(1));
@@ -69,7 +67,7 @@ public class DeleteCommandTest {
 
     @Test
     public void execute_validIndexFilteredList_success() {
-        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+        showPersonAtIndex(model, INDEX_SECOND_PERSON);
 
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
@@ -86,14 +84,14 @@ public class DeleteCommandTest {
 
     @Test
     public void execute_deletePersonWithTransactions_removesDanglingReferences() throws Exception {
-        Person personToDelete = model.getFilteredPersonList().get(0);
-        Person otherPerson = model.getFilteredPersonList().get(1);
+        Person personToDelete = model.getFilteredPersonList().get(1);
+        Person otherPerson = model.getFilteredPersonList().get(2);
 
         Transaction transaction = new Transaction(personToDelete, otherPerson, 10.0, "seed");
         personToDelete.appendTransaction(transaction);
         otherPerson.appendTransaction(transaction);
 
-        DeleteCommand deleteCommand = new DeleteCommand(Index.fromOneBased(1));
+        DeleteCommand deleteCommand = new DeleteCommand(Index.fromOneBased(2));
         deleteCommand.execute(model);
 
         Person survivingPerson = model.getFilteredPersonList().stream()

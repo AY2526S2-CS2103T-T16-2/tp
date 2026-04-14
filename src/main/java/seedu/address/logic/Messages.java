@@ -19,6 +19,8 @@ public class Messages {
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
 
+    private static final String MESSAGE_NONE = "(NONE)";
+
     /**
      * Returns an error message indicating the duplicate prefixes.
      */
@@ -44,10 +46,26 @@ public class Messages {
                 .append("; Address: ")
                 .append(person.getAddress())
                 .append("; Tags: ");
-        person.getTags().forEach(tag -> builder.append(tag).append(" "));
+
+        if (person.getTags().isEmpty()) {
+            builder.append(MESSAGE_NONE);
+        } else {
+            String tags = person.getTags().stream()
+                    .map(Object::toString)
+                    .sorted()
+                    .collect(Collectors.joining(" "));
+            builder.append(tags);
+        }
 
         builder.append("; Transactions: ");
-        person.getTransactions().forEach(transaction -> builder.append(transaction).append(" "));
+        if (person.getTransactions().isEmpty()) {
+            builder.append(MESSAGE_NONE);
+        } else {
+            String transactions = person.getTransactions().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(" "));
+            builder.append(transactions);
+        }
 
         return builder.toString();
     }

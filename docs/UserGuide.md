@@ -93,13 +93,13 @@ With IOU, users can:
 
 ### Parameter Summary
 
-| Parameter | Prefix | Constraints          | Example |
-|-----------|--------|----------------------|---------|
+| Parameter | Prefix | Constraints | Example |
+|-----------|--------|-------------|---------|
 | Name | `n/` | Alphanumeric characters, spaces, hyphens (`-`), and apostrophes (`'`); must not be blank | `n/John Doe` or `n/O'Brien` |
-| Phone | `p/` | Contains only numbers; At least 3 digits long | `p/98765432` |
+| Phone | `p/` | Exactly 8 digits; must start with `8` or `9` | `p/98765432` |
 | Email | `e/` | Standard `local-part@domain` format with at least one `.` after `@` | `e/johnd@example.com` |
-| Address | `a/` | Any non-blank value  | `a/Blk 30, #06-40` |
-| Tag | `t/` | Alphanumeric characters only (e.g. `friends`, `owesMoney`) | `t/friends` |
+| Address | `a/` | Any non-blank value; also used as the `AMOUNT` prefix in `addtxn` | `a/Blk 30, #06-40` |
+| Tag | `t/` | Alphanumeric characters only (e.g. `friends`, `owesMoney`)| `t/friends` |
 | Amount | `a/` | Positive number ≥ 0.01; at most 2 decimal places; no currency symbols or trailing `.` | `a/50` or `a/12.50` |
 | Description | `d/` | Any non-blank value; used in `addtxn` and as a filter prefix in `find` | `d/lunch` |
 | Min Amount | `min/` | Positive number; used only in `find` | `min/50` |

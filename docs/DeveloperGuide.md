@@ -353,7 +353,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*`      | careful user            | undo recent changes                                 | recover from mistakes                                                  |
 
 
-*{More to be added}*
+
 
 ### Use cases
 
@@ -542,7 +542,7 @@ Use case ends.
 
       Use case ends.
 
-*{More to be added}*
+
 
 ### Non-Functional Requirements
 
@@ -554,7 +554,7 @@ Use case ends.
 6.  The system should store data in a human-readable JSON format.
 7.  The application should provide clear error messages when invalid commands are entered.
 
-*{More to be added}*
+
 
 ### Glossary
 
@@ -698,11 +698,13 @@ testers are expected to do more *exploratory* testing.
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+### Saving data
 
-   1. Delete `data/addressbook.json` and `data/addressbook_transactions.json`, then start the app.<br>
-      Expected: The app recreates the data files from sample data and inserts the default `Me` contact if needed.
+1. **Missing data files**
+    1. Delete `data/addressbook.json` and `data/addressbook_transactions.json`, then start the app.
+   2. Expected: The app recreates the data files from sample data and inserts the default `Me` contact.
 
-   1. Corrupt either JSON file by introducing invalid JSON syntax, then start the app.<br>
-      Expected: The app logs a data loading warning and starts with an empty address book instead of partially loading corrupted data.
+1. **Corrupted data files**
+    1. Corrupt either JSON file by introducing invalid JSON syntax, then start the app.
+   2. Expected: The app logs a data loading warning and starts with an empty address book rather than partially loading corrupted data.
 

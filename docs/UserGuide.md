@@ -616,37 +616,81 @@ After settling, you can still view the transaction:
 - View original amount, description, and date
 - Use for budgeting, tax records, or expense tracking
 
-### Simplifying debts among a group : `simplify`
+### Simplify debts among a group : `simplify`
 
-Computes a minimal settlement plan for 3 or more selected people and shows who should pay whom, without modifying any transactions yet.
+Computes a minimal settlement plan for 3 or more selected people and displays who should pay whom. This command is **preview-only** — no transactions are modified.
 
 Format: `simplify PERSON_INDEX_1 PERSON_INDEX_2 PERSON_INDEX_3 [MORE_PERSON_INDEXES]...`
 
-* You must provide at least 3 distinct person indexes.
+* At least **3 distinct** person indexes must be provided.
 * All indexes refer to the currently displayed person list.
-* Only unsettled transactions between selected people are included in the calculation.
-* The command is preview-only: it does not mark any transaction as settled.
-* The resulting plan is shown in the UI result display.
+* Only **unsettled** in-group transactions (where both parties are in the selected group) are included.
 
 Examples:
-* `simplify 1 2 3`
-* `simplify 1 2 3 4`
 
-### Settling up a group : `settleup`
+| Command | What it does |
+|---------|-------------|
+| `simplify 1 2 3` | Computes a minimal transfer plan among persons 1, 2, and 3 |
+| `simplify 1 2 3 4` | Computes a minimal transfer plan among persons 1 to 4 |
+
+Expected output (transfers needed):
+
+```
+Simplified settlement plan (3 persons): Alice, Bob, Charlie
+1. Charlie pays Alice $30.00
+2. Bob pays Alice $10.00
+```
+
+Expected output (no transfers needed):
+
+```
+Simplified settlement plan (3 persons): Alice, Bob, Charlie
+No payments needed among selected persons.
+```
+
+Error messages:
+
+| Error | Cause |
+|-------|-------|
+| `At least 3 distinct person indices are required.` | Fewer than 3 indexes supplied |
+| `Duplicate person index detected: N` | The same index was provided more than once |
+
+### Settle up a group : `settleup`
 
 Marks all unsettled in-group transactions as settled in one action for 3 or more selected people.
 
 Format: `settleup PERSON_INDEX_1 PERSON_INDEX_2 PERSON_INDEX_3 [MORE_PERSON_INDEXES]...`
 
-* You must provide at least 3 distinct person indexes.
+* At least **3 distinct** person indexes must be provided.
 * All indexes refer to the currently displayed person list.
-* Only transactions where **both** the debtor and the creditor are in the selected group are settled.
-* Transactions involving anyone outside the group are left unchanged.
-* The result display shows how many transactions were settled and the total amount.
+* Only transactions where **both** the debtor and the creditor are within the selected group are settled. Transactions with persons outside the group are left unchanged.
 
 Examples:
-* `settleup 1 2 3`
-* `settleup 1 2 3 4 5`
+
+| Command | What it does |
+|---------|-------------|
+| `settleup 1 2 3` | Settles all in-group transactions among persons 1, 2, and 3 |
+| `settleup 1 2 3 4 5` | Settles all in-group transactions among persons 1 to 5 |
+
+Expected output (on success):
+
+```
+Settled up group (3 persons): Alice, Bob, Charlie
+5 transaction(s) settled. Total amount: $320.00
+```
+
+Expected output (nothing to settle):
+
+```
+No unsettled transactions found among the selected group.
+```
+
+Error messages:
+
+| Error | Cause |
+|-------|-------|
+| `At least 3 distinct person indices are required.` | Fewer than 3 indexes supplied |
+| `Duplicate person index detected: N` | The same index was provided more than once |
 
 ### Exiting the program : `exit`
 
@@ -685,6 +729,12 @@ Furthermore, certain edits can cause IOU to behave in unexpected ways if person 
 
 **Q**: How do I transfer my data to another Computer?<br>
 **A**: Install the app on the other computer and overwrite the empty data file it creates with the file that contains the data from your previous IOU home folder.
+
+**Q**: Can I undo a settled transaction?<br>
+**A**: No. Settled transactions cannot be unsettled. If it was settled by mistake, delete it with `delete INDEX t/TRANSACTION_INDEX` and re-enter it with `addtxn`.
+
+**Q**: What happens when I use `clear`?<br>
+**A**: All persons and their transactions are deleted, but the `Me` contact is always preserved (with its transactions removed).
 
 --------------------------------------------------------------------------------------------------------------------
 

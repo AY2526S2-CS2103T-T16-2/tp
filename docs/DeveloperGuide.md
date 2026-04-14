@@ -623,7 +623,7 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: List all persons using the `list` command. Multiple persons (at least 2) in the list.
 
     1. Test case: `addtxn 1 2 a/50 d/dinner`<br>
-       Expected: A transaction is added from person 1 to person 2 for an amount of 50 with description "dinner". Details of the added transaction shown in the status message. Timestamp in the status bar is updated.
+       Expected: A transaction is added from person 1 to person 2 for an amount of 50 with description "dinner". Details of the added transaction shown in the status message.
 
     1. Test case: `addtxn 1 2 a/50`<br>
        Expected: No transaction is added. Error details shown in the status message indicating that the description cannot be empty. Status bar remains the same.

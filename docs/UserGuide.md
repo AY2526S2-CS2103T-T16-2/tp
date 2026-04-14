@@ -96,7 +96,7 @@ With IOU, users can:
 | Parameter | Prefix | Constraints          | Example |
 |-----------|--------|----------------------|---------|
 | Name | `n/` | Alphanumeric characters, spaces, hyphens (`-`), and apostrophes (`'`); must not be blank | `n/John Doe` or `n/O'Brien` |
-| Phone | `p/` | Contains only numbers; At least 3 digits long | `p/98765432` |
+| Phone | `p/` |  Exactly 8 digits; must start with `8` or `9` | `p/98765432` |
 | Email | `e/` | Standard `local-part@domain` format with at least one `.` after `@` | `e/johnd@example.com` |
 | Address | `a/` | Any non-blank value  | `a/Blk 30, #06-40` |
 | Tag | `t/` | Alphanumeric characters only (e.g. `friends`, `owesMoney`) | `t/friends` |

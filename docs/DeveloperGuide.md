@@ -682,6 +682,8 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `find min/100 max/50`<br>
        Expected: Error message indicating min cannot be greater than max. List unchanged.
 
+
+
 ### Simplify and SettleUp
 
 1. Simplifying group debts
@@ -701,15 +703,14 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `settleup 1 2 3`<br>
        Expected: All unsettled transactions where both parties are among persons 1, 2, and 3 are marked settled. Result message shows count and total amount settled.
 
-### Saving data
 
 ### Saving data
 
 1. **Missing data files**
-    1. Delete `data/addressbook.json` and `data/addressbook_transactions.json`, then start the app.
+   1. Delete `data/addressbook.json` and `data/addressbook_transactions.json`, then start the app.
    2. Expected: The app recreates the data files from sample data and inserts the default `Me` contact.
 
 1. **Corrupted data files**
-    1. Corrupt either JSON file by introducing invalid JSON syntax, then start the app.
+   1. Corrupt either JSON file by introducing invalid JSON syntax, then start the app.
    2. Expected: The app logs a data loading warning and starts with an empty address book rather than partially loading corrupted data.
 

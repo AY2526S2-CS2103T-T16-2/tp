@@ -12,6 +12,8 @@ import seedu.address.model.person.Person;
  */
 public class Messages {
 
+    private static final String MESSAGE_NONE = "(NONE)";
+
     public static final String MESSAGE_UNKNOWN_COMMAND = "Unknown command";
     public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format! \n%1$s";
     public static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
@@ -44,10 +46,26 @@ public class Messages {
                 .append("; Address: ")
                 .append(person.getAddress())
                 .append("; Tags: ");
-        person.getTags().forEach(tag -> builder.append(tag).append(" "));
+
+        if (person.getTags().isEmpty()) {
+            builder.append(MESSAGE_NONE);
+        } else {
+            String tags = person.getTags().stream()
+                    .map(Object::toString)
+                    .sorted()
+                    .collect(Collectors.joining(" "));
+            builder.append(tags);
+        }
 
         builder.append("; Transactions: ");
-        person.getTransactions().forEach(transaction -> builder.append(transaction).append(" "));
+        if (person.getTransactions().isEmpty()) {
+            builder.append(MESSAGE_NONE);
+        } else {
+            String transactions = person.getTransactions().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(" "));
+            builder.append(transactions);
+        }
 
         return builder.toString();
     }

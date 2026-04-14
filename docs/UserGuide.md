@@ -375,24 +375,6 @@ After using `find`, displayed indices change to match the filtered view. Subsequ
 
 --------------------------------------------------------------------------------------------------------------------
 
-### Clear all entries : `clear`
-
-Clears all persons and their transactions from the address book. The `Me` contact is always preserved.
-
-Format: `clear`
-
-<div markdown="span" class="alert alert-warning">:exclamation: **Warning:**
-This deletes all persons and transactions and cannot be undone. The `Me` contact is retained, but all its transactions are removed.
-</div>
-
-Expected output:
-
-```
-[SUCCESS]Address book has been cleared!
-```
-
---------------------------------------------------------------------------------------------------------------------
-
 ### Settle a transaction : `settle`
 
 Marks a specific transaction as paid. The record remains visible in the transaction history with a `Settled` status and a $0.00 outstanding balance, preserving your financial history.
@@ -506,6 +488,24 @@ Error messages:
 |-------|-------|
 | `At least 3 distinct person indices are required.` | Fewer than 3 indexes supplied |
 | `Duplicate person index detected: N` | The same index was provided more than once |
+
+--------------------------------------------------------------------------------------------------------------------
+
+### Clear all entries : `clear`
+
+Clears all persons and their transactions from the address book. The `Me` contact is always preserved.
+
+Format: `clear`
+
+<div markdown="span" class="alert alert-warning">:exclamation: **Warning:**
+This deletes all persons and transactions and cannot be undone. The `Me` contact is retained, but all its transactions are removed.
+</div>
+
+Expected output:
+
+```
+[SUCCESS]Address book has been cleared!
+```
 
 --------------------------------------------------------------------------------------------------------------------
 

@@ -53,7 +53,7 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_addtxn_descriptionWithParagraphSeparators_parsesSuccessfully() throws Exception {
+    public void parseCommand_addtxn_descriptionWithParagraphSeparators() throws Exception {
         String description = "Z\u0338\u035Da\u0338\u031Al\u0334\u0302g\u0335\u0313o\u0338\u031B"
                 + " t\u030A\u0355e\u0311\u0330x\u030C\u033At\u0309\u0347 \u2029\u2029\u2029\u2029R";
         TransactionDescriptor descriptor = new TransactionDescriptor(3.0, description);

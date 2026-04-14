@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AddTransactionCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -28,6 +29,7 @@ import seedu.address.logic.commands.SimplifyCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
+import seedu.address.model.transaction.TransactionDescriptor;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -48,6 +50,19 @@ public class AddressBookParserTest {
         Person person = new PersonBuilder().build();
         AddCommand command = (AddCommand) parser.parseCommand(PersonUtil.getAddCommand(person));
         assertEquals(new AddCommand(person), command);
+    }
+
+    @Test
+    public void parseCommand_addtxn_descriptionWithParagraphSeparators() throws Exception {
+        String description = "Z\u0338\u035Da\u0338\u031Al\u0334\u0302g\u0335\u0313o\u0338\u031B"
+                + " t\u030A\u0355e\u0311\u0330x\u030C\u033At\u0309\u0347 \u2029\u2029\u2029\u2029R";
+        TransactionDescriptor descriptor = new TransactionDescriptor(3.0, description);
+        AddTransactionCommand expected = new AddTransactionCommand(Index.fromOneBased(1), Index.fromOneBased(2),
+                descriptor);
+
+        AddTransactionCommand actual = (AddTransactionCommand) parser.parseCommand(
+                AddTransactionCommand.COMMAND_WORD + " 1 2 a/3 d/" + description);
+        assertEquals(expected, actual);
     }
 
     @Test

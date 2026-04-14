@@ -370,9 +370,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 2a. The given information for the person is wrong/insufficient
+* 2a. The given person details are invalid, or adding the person would result in an incorrect state (e.g. a duplicate person).
 
-    * 2a1. IOU shows an error message.
+    * 2a1. IOU shows an error message and does not add the person.
+
+      Examples of such invalid inputs/requests include:
+      * Fields that violate input constraints (e.g. invalid phone number/email).
+      * Adding a duplicate person (e.g. a person with the same identity already exists in IOU). In this case, IOU shows
+        `This person already exists in IOU.`.
 
       Use case ends.
 
